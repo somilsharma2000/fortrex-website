@@ -39,28 +39,6 @@ body {
   cursor: default;
 }
 
-/* === KING CURSOR === */
-#kingCursor {
-  position: fixed; width: 24px; height: 24px;
-  border: 1.5px solid rgba(255,215,0,0.6);
-  border-radius: 50%; pointer-events: none; z-index: 99999;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, border-color 0.2s;
-  box-shadow: 0 0 12px rgba(255,215,0,0.3);
-}
-#kingCursor.hover {
-  width: 48px; height: 48px;
-  border-color: rgba(255,215,0,0.9);
-  box-shadow: 0 0 24px rgba(255,215,0,0.5);
-}
-#kingCursorDot {
-  position: fixed; width: 4px; height: 4px;
-  background: #FFD700; border-radius: 50%;
-  pointer-events: none; z-index: 99999;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 8px rgba(255,215,0,0.6);
-}
-
 /* === INTRO OVERLAY === */
 #intro {
   position: fixed; inset: 0; z-index: 99998;
@@ -448,7 +426,7 @@ body.reveal-ready .reveal.visible { opacity: 1; transform: translateY(0); }
   .tourn-grid { grid-template-columns: 1fr; }
   .hero-king { width: 140px; height: 140px; }
   body { cursor: auto; }
-  #kingCursor, #kingCursorDot { display: none; }
+  
   .email-form { flex-direction: column; }
   .how-card { padding: 36px 24px; }
 }
@@ -552,7 +530,7 @@ footer .king-throne::after {
 footer .king-throne:hover::after { opacity: 1; }
 
 </style>
-<style>body.js-active, body.js-active * { cursor: none !important; }</style>
+
 </head>
 <body>
 <script>document.body.classList.add("js-active"); document.body.classList.add("reveal-ready");</script>
@@ -563,9 +541,6 @@ footer .king-throne:hover::after { opacity: 1; }
   <img id="introKing" src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX">
 </div>
 
-<!-- KING CURSOR -->
-<div id="kingCursor"></div>
-<div id="kingCursorDot"></div>
 
 <!-- PARTICLE CANVAS -->
 <canvas id="goldParticles"></canvas>
@@ -740,26 +715,6 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('intro').classList.add('gone');
   }, 1800);
-});
-
-// === KING CURSOR ===
-const cursor = document.getElementById('kingCursor');
-const cursorDot = document.getElementById('kingCursorDot');
-let mx = 0, my = 0, cx = 0, cy = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animCursor() {
-  cx += (mx - cx) * 0.15;
-  cy += (my - cy) * 0.15;
-  cursor.style.left = cx + 'px';
-  cursor.style.top = cy + 'px';
-  cursorDot.style.left = mx + 'px';
-  cursorDot.style.top = my + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a, button, input').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
 
 // === GOLD PARTICLE SYSTEM ===

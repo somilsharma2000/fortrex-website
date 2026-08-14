@@ -140,16 +140,15 @@ footer p { font-size: 13px; color: rgba(255,255,255,0.5); }
 
 /* KING ECOSYSTEM */
 #goldParticles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-#kingCursor { position: fixed; width: 24px; height: 24px; border: 1.5px solid rgba(255,215,0,0.6); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
-#kingCursor.hover { width: 48px; height: 48px; border-color: rgba(255,215,0,0.9); }
-#kingCursorDot { position: fixed; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); box-shadow: 0 0 8px rgba(255,215,0,0.6); }
+
+
 .king-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 500px; height: 500px; pointer-events: none; z-index: 0; opacity: 0.025; }
 .king-ghost img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: blur(2px); }
 .crown-divider { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 20px 0; position: relative; z-index: 2; }
 .crown-divider .line { flex: 1; max-width: 200px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent); }
 .crown-divider svg { width: 28px; height: 28px; opacity: 0.5; }
 body { cursor: default; }
-@media (max-width: 768px) { body { cursor: auto !important; } #kingCursor, #kingCursorDot { display: none; } }
+@media (max-width: 768px) { body { cursor: auto !important; }  }
 
 
 /* === KING LOGO INTERACTIVE HOVER === */
@@ -253,13 +252,11 @@ footer .king-throne:hover::after { opacity: 1; }
 </style>
 <link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
 <link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
-<style>body.js-active, body.js-active * { cursor: none !important; }</style>
+
 </head>
 <body>
 
 <canvas id="goldParticles"></canvas>
-<div id="kingCursor"></div>
-<div id="kingCursorDot"></div>
 
 
 <canvas id="symbolMatrix"></canvas>
@@ -392,14 +389,6 @@ document.querySelectorAll('.filter-btn').forEach(btn => { btn.onclick = () => { 
 renderCards();
 </script>
 
-// KING CURSOR
-const cursor = document.getElementById('kingCursor');
-const cursorDot = document.getElementById('kingCursorDot');
-let mx=0,my=0,cx=0,cy=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-function animCursor(){cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;cursor.style.left=cx+'px';cursor.style.top=cy+'px';cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px';requestAnimationFrame(animCursor);}
-animCursor();
-document.querySelectorAll('a,button,input').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));});
 
 // GOLD PARTICLES
 const canvas = document.getElementById('goldParticles');
