@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORTREX — FAQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 
 :root {
   --bg-primary: #0A0E1A;
   --bg-card: rgba(255,255,255,0.025);
   --navy-mid: #141B2D;
   --white: #FFFFFF;
-  --text-muted: rgba(255,255,255,0.55);
-  --text-dim: rgba(255,255,255,0.32);
+  --text-muted: rgba(255,255,255,0.75);
+  --text-dim: rgba(255,255,255,0.5);
   --border: rgba(255,255,255,0.05);
   --border-gold: rgba(212,175,55,0.1);
   --border-gold-hover: rgba(255,215,0,0.4);
@@ -114,8 +115,8 @@ footer p { font-size: 13px; color: var(--text-dim); }
 .crown-divider { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 20px 0; position: relative; z-index: 2; }
 .crown-divider .line { flex: 1; max-width: 200px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent); }
 .crown-divider svg { width: 28px; height: 28px; opacity: 0.5; }
-body { cursor: none; }
-@media (max-width: 768px) { body { cursor: auto; } #kingCursor, #kingCursorDot { display: none; } }
+body { cursor: default; }
+@media (max-width: 768px) { body { cursor: auto !important; } #kingCursor, #kingCursorDot { display: none; } }
 
 
 /* === KING LOGO INTERACTIVE HOVER === */
@@ -173,7 +174,7 @@ body { cursor: none; }
 .hero-king {
   transform-style: preserve-3d;
   transition: transform 0.3s ease-out;
-  cursor: none;
+  cursor: default;
 }
 .hero-king img {
   transition: filter 0.3s, box-shadow 0.3s;
@@ -201,7 +202,7 @@ body { cursor: none; }
 
 /* === FOOTER KING HOVER === */
 footer .king-throne {
-  cursor: none;
+  cursor: default;
   transition: transform 0.4s, box-shadow 0.4s;
 }
 footer .king-throne:hover {
@@ -219,6 +220,7 @@ footer .king-throne:hover::after { opacity: 1; }
 </style>
 <link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
 <link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
+<style>body.js-active, body.js-active * { cursor: none !important; }</style>
 </head>
 <body>
 
@@ -234,7 +236,7 @@ footer .king-throne:hover::after { opacity: 1; }
   <a href="index.html" class="logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" class="logo-img" alt="FORTREX"> FORTREX</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="tournaments.html">Tournaments</a></li>
+    <li><a href="tournaments.html">Championships</a></li>
     <li><a href="leaderboard.html">Leaderboard</a></li>
     <li><a href="faq.html" class="active">FAQ</a></li>
   </ul>
@@ -265,7 +267,7 @@ footer .king-throne:hover::after { opacity: 1; }
 
 <div class="discord-cta">
   <p>Still have questions? Join our Discord.</p>
-  <a href="#" class="discord-btn">Join Discord</a>
+  <a href="https://discord.gg/fortrex" class="discord-btn">Join Discord</a>
 </div>
 
 <footer>

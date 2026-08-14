@@ -6,16 +6,17 @@
 <title>FORTREX — Trading Competition Community</title>
 <link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
 <link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 
 :root {
   --bg-primary: #0A0E1A;
   --bg-deep: #050518;
   --navy-mid: #141B2D;
   --white: #FFFFFF;
-  --text-muted: rgba(255,255,255,0.55);
-  --text-dim: rgba(255,255,255,0.32);
+  --text-muted: rgba(255,255,255,0.75);
+  --text-dim: rgba(255,255,255,0.5);
   --border: rgba(255,255,255,0.05);
   --border-gold: rgba(212,175,55,0.1);
   --border-gold-hover: rgba(255,215,0,0.4);
@@ -35,7 +36,7 @@ body {
   font-family: 'Inter', -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  cursor: none;
+  cursor: default;
 }
 
 /* === KING CURSOR === */
@@ -68,6 +69,8 @@ body {
   transition: opacity 0.8s ease, visibility 0.8s;
 }
 #intro.gone { opacity: 0; visibility: hidden; }
+#intro { animation: introFallback 1s 2.5s ease forwards; }
+@keyframes introFallback { to { opacity: 0; visibility: hidden; } }
 #introKing {
   width: 120px; height: 120px; border-radius: 24px;
   object-fit: cover;
@@ -144,7 +147,7 @@ nav.scrolled {
   padding: 10px 24px; background: transparent;
   border: 1px solid var(--border-gold-hover); border-radius: 8px;
   color: var(--gold); font-size: 13px; font-weight: 600;
-  cursor: none; transition: all 0.2s; font-family: inherit;
+  cursor: default; transition: all 0.2s; font-family: inherit;
 }
 .nav-cta:hover {
   background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914);
@@ -232,14 +235,14 @@ nav.scrolled {
   background: rgba(255,255,255,0.025); border: 1px solid var(--border);
   border-radius: 10px; color: var(--white); font-size: 15px;
   font-family: inherit; outline: none; transition: border-color 0.2s;
-  cursor: none;
+  cursor: default;
 }
 .email-form input::placeholder { color: var(--text-dim); }
 .email-form input:focus { border-color: var(--border-gold-hover); }
 .email-form button {
   padding: 14px 28px; border: none; border-radius: 10px;
   color: #050518; font-size: 14px; font-weight: 700;
-  cursor: none; white-space: nowrap; font-family: inherit;
+  cursor: default; white-space: nowrap; font-family: inherit;
   background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
   box-shadow: 0 2px 20px rgba(255,215,0,0.3), inset 0 1px 0 rgba(255,255,255,0.45);
   transition: transform 0.15s, box-shadow 0.2s;
@@ -504,7 +507,7 @@ footer .tagline {
 .hero-king {
   transform-style: preserve-3d;
   transition: transform 0.3s ease-out;
-  cursor: none;
+  cursor: default;
 }
 .hero-king img {
   transition: filter 0.3s, box-shadow 0.3s;
@@ -532,7 +535,7 @@ footer .tagline {
 
 /* === FOOTER KING HOVER === */
 footer .king-throne {
-  cursor: none;
+  cursor: default;
   transition: transform 0.4s, box-shadow 0.4s;
 }
 footer .king-throne:hover {
@@ -548,8 +551,10 @@ footer .king-throne::after {
 footer .king-throne:hover::after { opacity: 1; }
 
 </style>
+<style>body.js-active, body.js-active * { cursor: none !important; }</style>
 </head>
 <body>
+<script>document.body.classList.add("js-active");</script>
 
 <!-- INTRO OVERLAY -->
 <div id="intro">
@@ -836,14 +841,67 @@ form.addEventListener('submit', async (e) => {
       msg.textContent = data.duplicate ? "You're already on the list! 🏆" : "Your spot is reserved. Welcome to the arena. 👑";
       msg.style.color = '#FFD700';
       document.getElementById('emailInput').value = '';
-      loadWaitlistCount();
+      // Fallback for GitHub Pages (no backend)
+async function loadWaitlistCount() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getWaitlistCount');
+    const data = await res.json();
+    if (data.success) {
+      const count = data.count || 0;
+      const pct = Math.min((count / 10000) * 100, 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
+    }
+  } catch (err) {
+    // Fallback: show early access message
+    document.getElementById('progressCount').textContent = 'Be the first';
+    document.querySelector('.progress-label').textContent = 'Early Access — Limited Spots';
+  }
+}
+
+// Fix tournament data fallback
+async function loadTournaments() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getTournaments');
+    const data = await res.json();
+    if (data.success && data.tournaments && data.tournaments.length > 0) {
+      const cards = document.querySelectorAll('.tourn-card');
+      data.tournaments.forEach((t, i) => {
+        if (cards[i]) {
+          const h3 = cards[i].querySelector('h3');
+          const date = cards[i].querySelector('.date');
+          const desc = cards[i].querySelector('.desc');
+          if (h3) h3.textContent = t.name || h3.textContent;
+          if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
+          if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:var(--text-muted);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
+        }
+      });
+    }
+  } catch (err) { console.log('tournament data not available on static host'); }
+}
+
+loadWaitlistCount();
+loadTournaments();
     } else {
       msg.textContent = data.message || 'Something went wrong.';
       msg.style.color = '#ff4444';
     }
   } catch (err) {
-    msg.textContent = 'Network error. Try again.';
-    msg.style.color = '#ff4444';
+    // Fallback for static hosting
+    msg.textContent = "We're launching soon! Join our Discord to get notified. 👑";
+    msg.style.color = '#FFD700';
+  }
   }
   msg.classList.add('show');
 });
@@ -894,7 +952,58 @@ async function loadTournaments() {
   } catch (err) { console.log('tournament error', err); }
 }
 
+// Fallback for GitHub Pages (no backend)
+async function loadWaitlistCount() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getWaitlistCount');
+    const data = await res.json();
+    if (data.success) {
+      const count = data.count || 0;
+      const pct = Math.min((count / 10000) * 100, 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
+    }
+  } catch (err) {
+    // Fallback: show early access message
+    document.getElementById('progressCount').textContent = 'Be the first';
+    document.querySelector('.progress-label').textContent = 'Early Access — Limited Spots';
+  }
+}
+
+// Fix tournament data fallback
+async function loadTournaments() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getTournaments');
+    const data = await res.json();
+    if (data.success && data.tournaments && data.tournaments.length > 0) {
+      const cards = document.querySelectorAll('.tourn-card');
+      data.tournaments.forEach((t, i) => {
+        if (cards[i]) {
+          const h3 = cards[i].querySelector('h3');
+          const date = cards[i].querySelector('.date');
+          const desc = cards[i].querySelector('.desc');
+          if (h3) h3.textContent = t.name || h3.textContent;
+          if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
+          if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:var(--text-muted);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
+        }
+      });
+    }
+  } catch (err) { console.log('tournament data not available on static host'); }
+}
+
 loadWaitlistCount();
+loadTournaments();
 loadTournaments();
 </script>
 <script>
