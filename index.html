@@ -550,6 +550,10 @@ footer .king-throne::after {
 }
 footer .king-throne:hover::after { opacity: 1; }
 
+
+/* === REVEAL SAFETY NET === */
+@keyframes revealSafety { to { opacity: 1; transform: translateY(0); } }
+.reveal { animation: revealSafety 0.01s 4s forwards; }
 </style>
 <style>body.js-active, body.js-active * { cursor: none !important; }</style>
 </head>
@@ -818,10 +822,27 @@ window.addEventListener('scroll', () => {
 });
 
 // === REVEAL ON SCROLL ===
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+function checkReveal() {
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
+      el.classList.add('visible');
+    }
+  });
+}
+window.addEventListener('scroll', checkReveal);
+// Check immediately and on intervals as fallback
+checkReveal();
+setTimeout(checkReveal, 500);
+setTimeout(checkReveal, 1500);
+setTimeout(checkReveal, 3000);
+// Also use IntersectionObserver if available
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
 
 // === WAITLIST FORM ===
 const form = document.getElementById('waitlistForm');
