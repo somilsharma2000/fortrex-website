@@ -490,6 +490,12 @@ body.reveal-ready .reveal.visible { opacity: 1; transform: translateY(0); transi
         <input type="email" class="form-input" id="inputEmail" placeholder="trader@email.com" autocomplete="email">
       </div>
 
+      <!-- Honeypot: hidden from humans, bots fill it -->
+      <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+        <label>Website (leave empty)</label>
+        <input type="text" id="companyUrl" tabindex="-1" autocomplete="off">
+      </div>
+
       <button class="cta-btn" style="width:100%;justify-content:center;margin-top:6px;" id="submitBtn" onclick="submitForm()">Reserve My Spot &rarr;</button>
       <p class="form-note">No spam. Just your invite. That's it.</p>
     </div>
@@ -516,7 +522,19 @@ var API_SAVE = 'https://arlo-65bf27b6.base44.app/functions/saveWaitlistEntry';
 var API_COUNT = 'https://arlo-65bf27b6.base44.app/functions/getWaitlistCount';
 
 // === MODAL ===
-function openModal() { document.getElementById('regModal').classList.add('active'); }
+var formOpenTime = 0;
+function openModal() {
+  formOpenTime = Date.now();
+  document.getElementById('regModal').classList.add('active');
+
+  // Check if already registered on this browser
+  if (localStorage.getItem('fortrex_registered')) {
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').style.display = 'block';
+    var savedRef = localStorage.getItem('fortrex_refCode') || '';
+    document.getElementById('refLink').value = savedRef ? ('https://somilsharma2000.github.io/fortrex-website/?ref=' + savedRef) : '';
+  }
+}
 function closeModal() { document.getElementById('regModal').classList.remove('active'); }
 document.getElementById('regModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
@@ -528,21 +546,46 @@ function copyRef() {
   setTimeout(function() { event.target.textContent = 'Copy'; }, 2000);
 }
 
+var isSubmitting = false;
 function submitForm() {
+  // Prevent double submission
+  if (isSubmitting) return;
+  isSubmitting = true;
+
+  // Honeypot check — if filled, silently reject
+  var honeypot = document.getElementById('companyUrl').value;
+  if (honeypot) { isSubmitting = false; return; }
+
   var name = document.getElementById('inputName').value.trim();
   var code = document.getElementById('inputCode').value;
   var phone = document.getElementById('inputPhone').value.trim();
-  var email = document.getElementById('inputEmail').value.trim();
+  var email = document.getElementById('inputEmail').value.trim().toLowerCase();
   var country = document.getElementById('inputCode').selectedOptions[0].dataset.flag || 'IN';
 
-  if (!name) { document.getElementById('inputName').focus(); return; }
-  if (!phone || phone.length < 6) { document.getElementById('inputPhone').focus(); return; }
-  if (!email || email.indexOf('@') === -1) { document.getElementById('inputEmail').focus(); return; }
+  if (!name || name.length < 2) {
+    isSubmitting = false;
+    document.getElementById('inputName').focus();
+    return;
+  }
+  if (!phone || phone.replace(/\D/g, '').length < 6) {
+    isSubmitting = false;
+    document.getElementById('inputPhone').focus();
+    return;
+  }
+  if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+    isSubmitting = false;
+    document.getElementById('inputEmail').focus();
+    return;
+  }
+
+  // Calculate form fill time
+  var formTime = Date.now() - formOpenTime;
 
   var fullPhone = code + ' ' + phone;
   var btn = document.getElementById('submitBtn');
   btn.textContent = 'Reserving...';
   btn.style.opacity = '0.6';
+  btn.style.pointerEvents = 'none';
 
   // Generate referral code
   var refCode = name.replace(/\s+/g, '').substring(0, 8).toUpperCase() + Math.floor(Math.random() * 900 + 100);
@@ -550,26 +593,39 @@ function submitForm() {
   fetch(API_SAVE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, phone: fullPhone, email: email, country: country })
+    body: JSON.stringify({
+      name: name, phone: fullPhone, email: email, country: country,
+      honeypot: honeypot, formTime: formTime
+    })
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
     if (data.success) {
+      // Save to localStorage to prevent re-registration
+      localStorage.setItem('fortrex_registered', '1');
+      localStorage.setItem('fortrex_refCode', refCode);
+      localStorage.setItem('fortrex_email', email);
       document.getElementById('formView').style.display = 'none';
       document.getElementById('successView').style.display = 'block';
-      document.getElementById('refLink').value = 'https://somilsharma2000.github.io/landingpage/?ref=' + refCode;
+      document.getElementById('refLink').value = 'https://somilsharma2000.github.io/fortrex-website/?ref=' + refCode;
       loadRealCount();
     } else {
+      isSubmitting = false;
       btn.textContent = 'Reserve My Spot \u2192';
       btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
       alert(data.message || 'Something went wrong. Try again.');
     }
   })
   .catch(function(err) {
-    // Still show success — never break UX on network error
-    document.getElementById('formView').style.display = 'none';
+    isSubmitting = false;
+    btn.textContent = 'Reserve My Spot \u2192';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    alert('Network error. Please check your connection and try again.');
+  });
     document.getElementById('successView').style.display = 'block';
-    document.getElementById('refLink').value = 'https://somilsharma2000.github.io/landingpage/?ref=' + refCode;
+    document.getElementById('refLink').value = 'https://somilsharma2000.github.io/fortrex-website/?ref=' + refCode;
   });
 }
 
