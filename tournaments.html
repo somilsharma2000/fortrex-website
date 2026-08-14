@@ -108,7 +108,8 @@ nav.scrolled { background: rgba(10,14,26,0.92); backdrop-filter: blur(16px); bor
 .register-btn.disabled:hover { transform: none; box-shadow: none; }
 
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+body.reveal-ready .reveal { opacity: 0; transform: translateY(30px); }
+body.reveal-ready .reveal.visible { opacity: 1; transform: translateY(0); }
 
 footer { padding: 60px 24px 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 2; }
 footer .logo { justify-content: center; margin-bottom: 16px; }
@@ -249,9 +250,6 @@ footer .king-throne::after {
 }
 footer .king-throne:hover::after { opacity: 1; }
 
-
-@keyframes revealSafety { to { opacity: 1; transform: translateY(0); } }
-.reveal { animation: revealSafety 0.01s 4s forwards; }
 </style>
 <link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
 <link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
@@ -347,14 +345,6 @@ footer .king-throne:hover::after { opacity: 1; }
 const nav = document.getElementById('nav'), fab = document.getElementById('fab');
 window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); fab.classList.toggle('show', window.scrollY > 600); });
 
-function checkReveal() {
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) el.classList.add('visible');
-  });
-}
-window.addEventListener('scroll', checkReveal);
-checkReveal(); setTimeout(checkReveal, 500); setTimeout(checkReveal, 1500); setTimeout(checkReveal, 3000);
 const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
 
 const tournaments = [

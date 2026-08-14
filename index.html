@@ -435,8 +435,9 @@ footer .tagline {
 .section-king-bg img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: blur(2px); }
 
 /* === REVEAL ANIMATION === */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal { transition: opacity 0.7s, transform 0.7s; }
+body.reveal-ready .reveal { opacity: 0; transform: translateY(30px); }
+body.reveal-ready .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* === MOBILE === */
 @media (max-width: 768px) {
@@ -550,15 +551,11 @@ footer .king-throne::after {
 }
 footer .king-throne:hover::after { opacity: 1; }
 
-
-/* === REVEAL SAFETY NET === */
-@keyframes revealSafety { to { opacity: 1; transform: translateY(0); } }
-.reveal { animation: revealSafety 0.01s 4s forwards; }
 </style>
 <style>body.js-active, body.js-active * { cursor: none !important; }</style>
 </head>
 <body>
-<script>document.body.classList.add("js-active");</script>
+<script>document.body.classList.add("js-active"); document.body.classList.add("reveal-ready");</script>
 
 <!-- INTRO OVERLAY -->
 <div id="intro">
@@ -741,8 +738,7 @@ footer .king-throne:hover::after { opacity: 1; }
 // === INTRO ANIMATION ===
 window.addEventListener('load', () => {
   setTimeout(() => {
-    const intro = document.getElementById('intro');
-    if (intro) intro.classList.add('gone');
+    document.getElementById('intro').classList.add('gone');
   }, 1800);
 });
 
@@ -754,128 +750,162 @@ document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; })
 function animCursor() {
   cx += (mx - cx) * 0.15;
   cy += (my - cy) * 0.15;
-  if (cursor) { cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; }
-  if (cursorDot) { cursorDot.style.left = mx + 'px'; cursorDot.style.top = my + 'px'; }
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
+  cursorDot.style.left = mx + 'px';
+  cursorDot.style.top = my + 'px';
   requestAnimationFrame(animCursor);
 }
 animCursor();
 document.querySelectorAll('a, button, input').forEach(el => {
-  el.addEventListener('mouseenter', () => { if (cursor) cursor.classList.add('hover'); });
-  el.addEventListener('mouseleave', () => { if (cursor) cursor.classList.remove('hover'); });
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
 
 // === GOLD PARTICLE SYSTEM ===
 const canvas = document.getElementById('goldParticles');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  resize();
-  window.addEventListener('resize', resize);
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
 
-  class Particle {
-    constructor() { this.reset(); this.y = Math.random() * canvas.height; }
-    reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = canvas.height + Math.random() * 100;
-      this.size = Math.random() * 2 + 0.5;
-      this.speed = Math.random() * 0.5 + 0.2;
-      this.opacity = Math.random() * 0.4 + 0.1;
-      this.sway = Math.random() * 0.5 - 0.25;
-      this.swayOffset = Math.random() * Math.PI * 2;
-      this.life = 0;
-    }
-    update() {
-      this.y -= this.speed;
-      this.life += 0.01;
-      this.x += Math.sin(this.life + this.swayOffset) * this.sway;
-      if (this.y < -10) this.reset();
-    }
-    draw() {
-      const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
-      grd.addColorStop(0, `rgba(255,215,0,${this.opacity})`);
-      grd.addColorStop(0.5, `rgba(212,175,55,${this.opacity * 0.5})`);
-      grd.addColorStop(1, 'rgba(212,175,55,0)');
-      ctx.fillStyle = grd;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = `rgba(255,248,220,${this.opacity * 1.5})`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
+class Particle {
+  constructor() { this.reset(); this.y = Math.random() * canvas.height; }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + Math.random() * 100;
+    this.size = Math.random() * 2 + 0.5;
+    this.speed = Math.random() * 0.5 + 0.2;
+    this.opacity = Math.random() * 0.4 + 0.1;
+    this.sway = Math.random() * 0.5 - 0.25;
+    this.swayOffset = Math.random() * Math.PI * 2;
+    this.life = 0;
   }
-  for (let i = 0; i < 80; i++) particles.push(new Particle());
-  function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animateParticles);
+  update() {
+    this.y -= this.speed;
+    this.life += 0.01;
+    this.x += Math.sin(this.life + this.swayOffset) * this.sway;
+    if (this.y < -10) this.reset();
   }
-  animateParticles();
+  draw() {
+    const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+    grd.addColorStop(0, `rgba(255,215,0,${this.opacity})`);
+    grd.addColorStop(0.5, `rgba(212,175,55,${this.opacity * 0.5})`);
+    grd.addColorStop(1, 'rgba(212,175,55,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(255,248,220,${this.opacity * 1.5})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
 
 // === NAV SCROLL ===
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+  nav.classList.toggle('scrolled', window.scrollY > 20);
 });
 
 // === REVEAL ON SCROLL ===
-function checkReveal() {
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
-      el.classList.add('visible');
-    }
-  });
-}
-window.addEventListener('scroll', checkReveal);
-// Check immediately and on intervals as fallback
-checkReveal();
-setTimeout(checkReveal, 500);
-setTimeout(checkReveal, 1500);
-setTimeout(checkReveal, 3000);
-// Also use IntersectionObserver if available
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // === WAITLIST FORM ===
 const form = document.getElementById('waitlistForm');
 const msg = document.getElementById('formMsg');
-if (form) {
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('emailInput').value;
-    msg.classList.remove('show');
-    try {
-      const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/saveWaitlistEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'teaser', country: 'IN' })
-      });
-      const data = await res.json();
-      if (data.success) {
-        msg.textContent = data.duplicate ? "You're already on the list! 🏆" : "Your spot is reserved. Welcome to the arena. 👑";
-        msg.style.color = '#FFD700';
-        document.getElementById('emailInput').value = '';
-        loadWaitlistCount();
-      } else {
-        msg.textContent = data.message || 'Something went wrong.';
-        msg.style.color = '#ff4444';
-      }
-    } catch (err) {
-      // Fallback for static hosting (GitHub Pages)
-      msg.textContent = "We're launching soon! Join our Discord to get notified. 👑";
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('emailInput').value;
+  msg.classList.remove('show');
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/saveWaitlistEntry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'teaser', country: 'IN' })
+    });
+    const data = await res.json();
+    if (data.success) {
+      msg.textContent = data.duplicate ? "You're already on the list! 🏆" : "Your spot is reserved. Welcome to the arena. 👑";
       msg.style.color = '#FFD700';
+      document.getElementById('emailInput').value = '';
+      // Fallback for GitHub Pages (no backend)
+async function loadWaitlistCount() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getWaitlistCount');
+    const data = await res.json();
+    if (data.success) {
+      const count = data.count || 0;
+      const pct = Math.min((count / 10000) * 100, 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
     }
-    msg.classList.add('show');
-  });
+  } catch (err) {
+    // Fallback: show early access message
+    document.getElementById('progressCount').textContent = 'Be the first';
+    document.querySelector('.progress-label').textContent = 'Early Access — Limited Spots';
+  }
 }
+
+// Fix tournament data fallback
+async function loadTournaments() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getTournaments');
+    const data = await res.json();
+    if (data.success && data.tournaments && data.tournaments.length > 0) {
+      const cards = document.querySelectorAll('.tourn-card');
+      data.tournaments.forEach((t, i) => {
+        if (cards[i]) {
+          const h3 = cards[i].querySelector('h3');
+          const date = cards[i].querySelector('.date');
+          const desc = cards[i].querySelector('.desc');
+          if (h3) h3.textContent = t.name || h3.textContent;
+          if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
+          if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:rgba(255,255,255,0.75);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
+        }
+      });
+    }
+  } catch (err) { console.log('tournament data not available on static host'); }
+}
+
+loadWaitlistCount();
+loadTournaments();
+    } else {
+      msg.textContent = data.message || 'Something went wrong.';
+      msg.style.color = '#ff4444';
+    }
+  } catch (err) {
+    // Fallback for static hosting
+    msg.textContent = "We're launching soon! Join our Discord to get notified. 👑";
+    msg.style.color = '#FFD700';
+  }
+  }
+  msg.classList.add('show');
+});
 
 // === WAITLIST COUNT ===
 async function loadWaitlistCount() {
@@ -885,20 +915,11 @@ async function loadWaitlistCount() {
     if (data.success) {
       const count = data.count || 0;
       const pct = Math.min((count / 10000) * 100, 100);
-      const fill = document.getElementById('progressFill');
-      const countEl = document.getElementById('progressCount');
-      if (fill) fill.style.width = pct + '%';
-      if (countEl) countEl.textContent = count.toLocaleString();
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
     }
-  } catch (err) {
-    // Fallback: show early access message
-    const countEl = document.getElementById('progressCount');
-    const label = document.querySelector('.progress-label');
-    if (countEl) countEl.textContent = 'Be the first';
-    if (label) label.textContent = 'Early Access — Limited Spots';
-  }
+  } catch (err) { console.log('count error', err); }
 }
-loadWaitlistCount();
 
 // === TOURNAMENTS DATA ===
 async function loadTournaments() {
@@ -915,17 +936,78 @@ async function loadTournaments() {
           if (h3) h3.textContent = t.name || h3.textContent;
           if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
           if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:rgba(255,255,255,0.75);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
         }
       });
     }
+  } catch (err) { console.log('tournament error', err); }
+}
+
+// Fallback for GitHub Pages (no backend)
+async function loadWaitlistCount() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getWaitlistCount');
+    const data = await res.json();
+    if (data.success) {
+      const count = data.count || 0;
+      const pct = Math.min((count / 10000) * 100, 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
+    }
   } catch (err) {
-    console.log('tournament data not available on static host');
+    // Fallback: show early access message
+    document.getElementById('progressCount').textContent = 'Be the first';
+    document.querySelector('.progress-label').textContent = 'Early Access — Limited Spots';
   }
 }
+
+// Fix tournament data fallback
+async function loadTournaments() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getTournaments');
+    const data = await res.json();
+    if (data.success && data.tournaments && data.tournaments.length > 0) {
+      const cards = document.querySelectorAll('.tourn-card');
+      data.tournaments.forEach((t, i) => {
+        if (cards[i]) {
+          const h3 = cards[i].querySelector('h3');
+          const date = cards[i].querySelector('.date');
+          const desc = cards[i].querySelector('.desc');
+          if (h3) h3.textContent = t.name || h3.textContent;
+          if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
+          if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:rgba(255,255,255,0.75);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
+        }
+      });
+    }
+  } catch (err) { console.log('tournament data not available on static host'); }
+}
+
+loadWaitlistCount();
+loadTournaments();
 loadTournaments();
 </script>
 <script>
-
 
 // === LOGO PARTICLE BURST ===
 function createLogoBurst(el) {
@@ -1026,7 +1108,6 @@ if (footerKing) {
     }
   });
 }
-
 
 </script>
 </body>
