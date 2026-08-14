@@ -345,15 +345,17 @@ footer .king-throne:hover::after { opacity: 1; }
 const nav = document.getElementById('nav'), fab = document.getElementById('fab');
 window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); fab.classList.toggle('show', window.scrollY > 600); });
 
-function checkReveal() {
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) el.classList.add('visible');
-  });
-}
-window.addEventListener('scroll', checkReveal);
-checkReveal(); setTimeout(checkReveal, 500); setTimeout(checkReveal, 1500); setTimeout(checkReveal, 3000);
+// Nuclear fallback: force all reveal elements visible after 2s
+setTimeout(function() {
+  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+}, 2000);
 const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
+window.addEventListener('scroll', function() {
+  document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 100) el.classList.add('visible');
+  });
+});
 
 const tournaments = [
   { id: 1, name: "Genesis Championship", status: "upcoming", startDate: "Aug 23, 2026", endDate: "Aug 30, 2026", format: "ROI-based (TWRR)", entry: "Free (Waitlist Verified)", prize: "Variable Pool — funded by platform revenue", maxParticipants: 500, registeredCount: 0, duration: "7 days", verification: "MT4/MT5 Verified", rules: [ { label: "Format", val: "ROI-based (TWRR)" }, { label: "Duration", val: "7 days" }, { label: "Entry", val: "Free (Verified)", gold: true }, { label: "Max Traders", val: "500" }, { label: "Verification", val: "MT4/MT5" }, { label: "Prize Pool", val: "Variable", gold: true } ] },
