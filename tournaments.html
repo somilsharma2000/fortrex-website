@@ -345,6 +345,14 @@ footer .king-throne:hover::after { opacity: 1; }
 const nav = document.getElementById('nav'), fab = document.getElementById('fab');
 window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); fab.classList.toggle('show', window.scrollY > 600); });
 
+function checkReveal() {
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) el.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', checkReveal);
+checkReveal(); setTimeout(checkReveal, 500); setTimeout(checkReveal, 1500); setTimeout(checkReveal, 3000);
 const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
 
 const tournaments = [
