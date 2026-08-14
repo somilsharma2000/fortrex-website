@@ -213,6 +213,79 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
 .gi-text span{color:var(--gold);font-weight:800}
 .gi-status{font-size:10px;font-weight:700;letter-spacing:0.08em;padding:2px 8px;border-radius:50px;color:#00C853;border:1px solid rgba(0,200,83,0.3);background:rgba(0,200,83,0.05)}
 
+
+/* LOGO BURST */
+@keyframes logoBurstAnim{0%{transform:scale(1);filter:brightness(1)}30%{transform:scale(1.15);filter:brightness(1.5)}60%{transform:scale(1.05);filter:brightness(1.3)}100%{transform:scale(1);filter:brightness(1)}}
+.logo.bursting{animation:logoBurstAnim .6s cubic-bezier(.34,1.56,.64,1)}
+.logo.bursting .logo-img{box-shadow:0 0 30px rgba(212,175,55,0.6),0 0 60px rgba(212,175,55,0.3);transition:box-shadow .3s}
+.logo-ring-burst{position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--gold);opacity:0;pointer-events:none}
+.logo-ring-burst.go{animation:ringBurst .6s ease-out}
+@keyframes ringBurst{0%{transform:scale(0.8);opacity:0.8}100%{transform:scale(2.5);opacity:0}}
+
+
+/* LEADERBOARD ENHANCED */
+.architects-board{transition:all .4s ease}
+.architects-row{position:relative;animation:rowSlideIn .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes rowSlideIn{0%{opacity:0;transform:translateX(-30px)}100%{opacity:1;transform:translateX(0)}}
+.architects-row:hover{transform:translateX(4px) scale(1.02);box-shadow:0 4px 24px rgba(212,175,55,0.15);border-color:var(--gold)}
+.architects-row.you{background:linear-gradient(90deg,rgba(212,175,55,0.08),rgba(212,175,55,0.02));border-color:var(--gold);animation:rowPulse 2s ease-in-out infinite}
+@keyframes rowPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,0.1)}50%{box-shadow:0 0 20px 4px rgba(212,175,55,0.15)}}
+.architects-badge{transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.architects-badge:hover{transform:scale(1.2) rotate(5deg)}
+.architects-badge.founder{animation:badgeFloat 3s ease-in-out infinite}
+.architects-badge.architect{animation:badgeFloat 3s ease-in-out infinite .5s}
+.architects-badge.catalyst{animation:badgeFloat 3s ease-in-out infinite 1s}
+@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.architects-badge.founder:hover{animation:none;transform:scale(1.25) rotate(-3deg);box-shadow:0 0 30px rgba(212,175,55,0.4)}
+.architects-badge.architect:hover{animation:none;transform:scale(1.2) rotate(2deg);box-shadow:0 0 20px rgba(192,192,192,0.4)}
+.architects-badge.catalyst:hover{animation:none;transform:scale(1.15) rotate(-1deg);box-shadow:0 0 16px rgba(205,127,50,0.4)}
+.architects-tier{transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.architects-tier:hover{transform:translateY(-6px)}
+.tier-icon{transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.architects-tier:hover .tier-icon{transform:scale(1.3) rotate(10deg)}
+
+
+/* REX ENHANCED */
+.rex-pill{position:relative;overflow:hidden}
+.rex-pill::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.15),transparent);transition:left .6s ease}
+.rex-pill:hover::before{left:100%}
+.rex-coin{animation:rexCoinSpin 4s linear infinite;transition:transform .3s}
+@keyframes rexCoinSpin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+.rex-card:hover .rex-coin{animation-duration:1s}
+.rex-symbol{animation:rexGlow2 2.5s ease-in-out infinite}
+@keyframes rexGlow2{0%,100%{text-shadow:0 0 10px rgba(212,175,55,0.3)}50%{text-shadow:0 0 25px rgba(212,175,55,0.6),0 0 50px rgba(212,175,55,0.2)}}
+.rex-pill:hover .rp-icon{animation:iconBounce .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes iconBounce{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+
+/* RADAR COL ENHANCED */
+.radar-col{position:relative;overflow:hidden}
+.radar-col::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.08),transparent);transition:left .5s ease}
+.radar-col:hover::before{left:100%}
+.radar-col:hover .rc-icon{transform:scale(1.3) rotate(5deg);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.pass-alloc-badge{animation:badgeGlowPulse 2s ease-in-out infinite}
+@keyframes badgeGlowPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,200,83,0.2)}50%{box-shadow:0 0 20px 4px rgba(0,200,83,0.15)}}
+.pass-card{animation:passFloat 4s ease-in-out infinite}
+@keyframes passFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pass-portal{transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.pass-portal:hover{transform:scale(1.05);box-shadow:0 8px 32px rgba(212,175,55,0.3)}
+
+
+/* LIVE FEED ENHANCED */
+.live-feed-item{animation:feedSlideIn .4s cubic-bezier(.34,1.56,.64,1) both;transition:all .3s ease}
+@keyframes feedSlideIn{0%{opacity:0;transform:translateX(-20px) scale(0.9)}100%{opacity:1;transform:translateX(0) scale(1)}}
+.live-feed-item:hover{transform:translateX(4px);background:rgba(212,175,55,0.06)}
+.live-feed-avatar{transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.live-feed-item:hover .live-feed-avatar{transform:scale(1.15)}
+
+
+/* HERO CTA GLOW */
+.cta-btn{position:relative;overflow:hidden}
+.cta-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left .5s ease}
+.cta-btn:hover::before{left:100%}
+.cta-btn{box-shadow:0 0 20px rgba(212,175,55,0.2),0 4px 16px rgba(0,0,0,0.3);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(212,175,55,0.4),0 8px 24px rgba(0,0,0,0.4)}
+
 /* VERIFICATION STATE */
 .verify-view{text-align:center;padding:10px 0}
 .verify-spinner{width:56px;height:56px;margin:0 auto 24px;position:relative}
@@ -339,6 +412,22 @@ nav{padding:12px 16px}.logo{font-size:16px}.logo-img{width:32px;height:32px}.her
 .member-code-box{flex-direction:column;text-align:center}.member-code-box .mc-copy{width:100%}.pass-card{max-width:280px;padding:24px 20px}.radar-grid{grid-template-columns:1fr;gap:8px}.pass-arch{padding:14px 16px}.pass-id{font-size:20px}.pass-referral{flex-direction:column;text-align:center}.pass-referral .pr-copy{width:100%}.pass-actions{flex-direction:column}.pass-share-x{width:100%}
 }
 @media (max-width:380px){.architects-tier-row{flex-direction:column;gap:8px}.architects-tier{display:flex;align-items:center;gap:8px;text-align:left}.architects-tier .tier-icon{margin-bottom:0}}
+
+/* MOBILE POLISH */
+@media(max-width:480px){
+.hero-badge{font-size:10px;padding:5px 12px}
+.pass-alloc-badge{font-size:11px;padding:6px 12px}
+.radar-col{padding:10px 8px}
+.rc-desc{font-size:9px}
+.rc-name{font-size:12px}
+.rc-tag{font-size:10px}
+.pass-meta{flex-direction:column;gap:8px}
+.pass-meta-item{display:flex;justify-content:space-between;width:100%}
+.pass-arch{padding:12px 14px}
+.pa-desc{font-size:12px}
+.genesis-indicator{font-size:11px;padding:6px 14px}
+}
+
 </style>
 </head>
 <body>
@@ -354,11 +443,11 @@ nav{padding:12px 16px}.logo{font-size:16px}.logo-img{width:32px;height:32px}.her
   <button class="portal-share" onclick="shareCode()">Share My Code</button>
 </div>
 
-<nav id="nav"><a href="#" class="logo"><span class="logo-img-wrapper"><span class="logo-glow"></span><span class="logo-ring"></span><span class="logo-ring-2"></span><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX" class="logo-img"></span>FORTREX</a><button class="nav-cta" onclick="openModal()">Get Access</button></nav>
+<nav id="nav"><a href="#" class="logo" id="navLogo" onclick="logoBurst();return false;"><span class="logo-img-wrapper"><span class="logo-glow"></span><span class="logo-ring"></span><span class="logo-ring-2"></span><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX" class="logo-img"></span>FORTREX</a><button class="nav-cta" onclick="openModal()">Get Access</button></nav>
 
-<section class="hero"><div class="hero-badge"><span class="dot"></span> Something is coming for traders who refuse to settle.</div><div class="hero-logo-wrap"><div class="hero-logo-glow"></div><div class="hero-logo-ring"></div><div class="hero-logo-ring-2"></div><canvas class="hero-logo-particles" id="heroParticles"></canvas><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX" class="hero-logo" id="heroLogo"></div><h1>10,000 traders. <span class="gold">Not one more.</span></h1><p class="hero-sub">We're building something for a specific kind of trader. If that's you, you already know. If it's not — this page won't make sense anyway.</p><div class="genesis-indicator" id="genesisIndicator" style="display:none;"><span class="gi-pulse"></span><span class="gi-text">Genesis Member <span id="giNum">#—</span></span><span class="gi-status">LOCKED</span></div><div class="hero-cta-row"><button class="cta-btn" onclick="openModal()">Claim My Spot &rarr;</button><a href="#community" class="cta-btn cta-btn-outline">Join Discord</a></div></section>
+<section class="hero"><div class="hero-badge"><span class="dot"></span> Something is coming for traders who refuse to settle.</div><div class="hero-logo-wrap"><div class="hero-logo-glow"></div><div class="hero-logo-ring"></div><div class="hero-logo-ring-2"></div><canvas class="hero-logo-particles" id="heroParticles"></canvas><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX" class="hero-logo" id="heroLogo" onclick="heroLogoBurst()" style="cursor:pointer"></div><h1>10,000 traders. <span class="gold">Not one more.</span></h1><p class="hero-sub">We're building something for a specific kind of trader. If that's you, you already know. If it's not — this page won't make sense anyway.</p><div class="genesis-indicator" id="genesisIndicator" style="display:none;"><span class="gi-pulse"></span><span class="gi-text">Genesis Member <span id="giNum">#—</span></span><span class="gi-status">LOCKED</span></div><div class="hero-cta-row"><button class="cta-btn" onclick="openModal()">Claim My Spot &rarr;</button><a href="#community" class="cta-btn cta-btn-outline">Join Discord</a></div></section>
 
-<section class="cap-section"><div class="cap-number" id="capNumber">0</div><div class="cap-label">Traders Registered</div><div class="cap-desc">Built for 10,000 real traders. Not one more. Registration is open.</div><div class="cap-dm" id="capDm"><strong>We're full.</strong> 10,000 traders have claimed their seats. But seats open up — people drop, accounts go stale. <strong>DM us on any platform below</strong> and you might be next in line when a spot frees up.<div class="platforms"><a onclick="return false" style="cursor:pointer">Discord</a><a onclick="return false" style="cursor:pointer">Instagram</a><a onclick="return false" style="cursor:pointer">Telegram</a><a onclick="return false" style="cursor:pointer">X</a></div></div></section>
+<section class="cap-section"><div class="cap-number" id="capNumber">0</div><div class="cap-label">Traders Registered</div><div class="cap-desc">Built for 10,000 real traders. Not one more. When it's full, it's full.</div><div class="cap-dm" id="capDm"><strong>10,000 seats filled. That's the cap. But traders leave — accounts go cold, people move on. <strong>Reach out on any platform below</strong> and we'll put you on the shortlist for when a seat opens.<div class="platforms"><a onclick="return false" style="cursor:pointer">Discord</a><a onclick="return false" style="cursor:pointer">Instagram</a><a onclick="return false" style="cursor:pointer">Telegram</a><a onclick="return false" style="cursor:pointer">X</a></div></div></section>
 
 <div class="crown-divider"><div class="line"></div><svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M3 18h18M5 8l4 3 3-5 3 5 4-3v8H5V8z"/></svg><div class="line"></div></div>
 
@@ -377,7 +466,7 @@ nav{padding:12px 16px}.logo{font-size:16px}.logo-img{width:32px;height:32px}.her
 <div class="crown-divider"><div class="line"></div><svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M3 18h18M5 8l4 3 3-5 3 5 4-3v8H5V8z"/></svg><div class="line"></div></div>
 
 <!-- ARCHITECTS LEADERBOARD -->
-<section class="architects-section reveal" id="ambassadors"><div class="architects-header"><h3>The <span class="gold">Architects' Circle</span></h3><p>The traders who build the community <strong>own its future.</strong> Top contributors don't just get a seat — they become part of FORTREX itself.</p></div><div class="architects-tier-row"><div class="architects-tier"><span class="tier-icon">&#128081;</span><span class="tier-name">Founder</span><span class="tier-desc">Top 3 builders</span></div><div class="architects-tier"><span class="tier-icon">&#9881;</span><span class="tier-name">Architect</span><span class="tier-desc">Top 10 builders</span></div><div class="architects-tier"><span class="tier-icon">&#128293;</span><span class="tier-name">Catalyst</span><span class="tier-desc">Five or more</span></div></div><div class="architects-board" id="ambassadorBoard"><div class="architects-empty">The circle is empty. The first architects haven't arrived yet.</div></div></section>
+<section class="architects-section reveal" id="ambassadors"><div class="architects-header"><h3>The <span class="gold">Architects' Circle</span></h3><p>This isn't a referral program. It's a <strong>construction crew.</strong> The traders who bring others aren't recruiting — they're building something that lasts. And the ones who build the most, own the most.</p></div><div class="architects-tier-row"><div class="architects-tier"><span class="tier-icon">&#128081;</span><span class="tier-name">Founder</span><span class="tier-desc">Top 3 builders</span></div><div class="architects-tier"><span class="tier-icon">&#9881;</span><span class="tier-name">Architect</span><span class="tier-desc">Top 10 builders</span></div><div class="architects-tier"><span class="tier-icon">&#128293;</span><span class="tier-name">Catalyst</span><span class="tier-desc">Five or more</span></div></div><div class="architects-board" id="ambassadorBoard"><div class="architects-empty">The circle is empty. The first architects haven't arrived yet.</div></div></section>
 
 <!-- SOCIAL ROW -->
 <section class="social-row reveal" id="community"><a href="#" class="social-btn" onclick="return false" title="Discord"><svg viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a><a href="#" class="social-btn" onclick="return false" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#D4AF37" stroke="none"/></svg></a><a href="#" class="social-btn" onclick="return false" title="X / Twitter"><svg viewBox="0 0 24 24" fill="#FFFFFF"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a href="#" class="social-btn" onclick="return false" title="YouTube"><svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a><a href="#" class="social-btn" onclick="return false" title="Telegram"><svg viewBox="0 0 24 24" fill="#26A5E4"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.635.295l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.643.136-.953l11.566-4.458c.538-.196 1.007.128.832.938z"/></svg></a></section>
@@ -482,6 +571,10 @@ document.body.classList.add('reveal-ready');var revealObserver=new IntersectionO
 /* INIT */
 if(localStorage.getItem('fortrex_registered')){loadMemberStatus();}
 loadRealCount();loadLeaderboard();setInterval(loadRealCount,30000);setInterval(loadLeaderboard,60000);setInterval(function(){if(localStorage.getItem('fortrex_registered'))loadMemberStatus();},30000);
+
+function logoBurst(){var logo=document.getElementById('navLogo');logo.classList.remove('bursting');void logo.offsetWidth;logo.classList.add('bursting');var ring=document.createElement('div');ring.className='logo-ring-burst';logo.querySelector('.logo-img-wrapper').appendChild(ring);void ring.offsetWidth;ring.classList.add('go');setTimeout(function(){ring.remove();logo.classList.remove('bursting');},600);}
+
+function heroLogoBurst(){var logo=document.getElementById('heroLogo');logo.style.transition='transform .6s cubic-bezier(.34,1.56,.64,1),filter .3s';logo.style.transform='scale(1.2)';logo.style.filter='brightness(1.6) drop-shadow(0 0 40px rgba(212,175,55,0.8))';setTimeout(function(){logo.style.transform='scale(1)';logo.style.filter='brightness(1)';},300);setTimeout(function(){logo.style.transition='';},700);}
 </script>
 </body>
 </html>
