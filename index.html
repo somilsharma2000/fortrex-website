@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORTREX — Trading Competition Community</title>
+<link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
+<link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg-primary: #0A0E1A;
+  --bg-deep: #050518;
+  --navy-mid: #141B2D;
+  --white: #FFFFFF;
+  --text-muted: rgba(255,255,255,0.55);
+  --text-dim: rgba(255,255,255,0.32);
+  --border: rgba(255,255,255,0.05);
+  --border-gold: rgba(212,175,55,0.1);
+  --border-gold-hover: rgba(255,215,0,0.4);
+  --gold: #D4AF37;
+  --gold-deep: #8B6914;
+  --gold-light: #FFD700;
+  --gold-shine: #FFF8DC;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--white);
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* === KING CURSOR === */
+#kingCursor {
+  position: fixed; width: 24px; height: 24px;
+  border: 1.5px solid rgba(255,215,0,0.6);
+  border-radius: 50%; pointer-events: none; z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, border-color 0.2s;
+  box-shadow: 0 0 12px rgba(255,215,0,0.3);
+}
+#kingCursor.hover {
+  width: 48px; height: 48px;
+  border-color: rgba(255,215,0,0.9);
+  box-shadow: 0 0 24px rgba(255,215,0,0.5);
+}
+#kingCursorDot {
+  position: fixed; width: 4px; height: 4px;
+  background: #FFD700; border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(255,215,0,0.6);
+}
+
+/* === INTRO OVERLAY === */
+#intro {
+  position: fixed; inset: 0; z-index: 99998;
+  background: var(--bg-deep);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+#intro.gone { opacity: 0; visibility: hidden; }
+#introKing {
+  width: 120px; height: 120px; border-radius: 24px;
+  object-fit: cover;
+  animation: introKing 2s ease forwards;
+  box-shadow: 0 0 60px rgba(255,215,0,0.4);
+}
+@keyframes introKing {
+  0% { opacity: 0; transform: scale(0.3) rotate(-180deg); }
+  40% { opacity: 1; transform: scale(1.1) rotate(0deg); }
+  60% { transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+#introRays {
+  position: absolute; width: 600px; height: 600px;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.06) 20deg, transparent 40deg, rgba(255,215,0,0.06) 60deg, transparent 80deg, rgba(255,215,0,0.06) 100deg, transparent 120deg, rgba(255,215,0,0.06) 140deg, transparent 160deg, rgba(255,215,0,0.06) 180deg, transparent 200deg, rgba(255,215,0,0.06) 220deg, transparent 240deg, rgba(255,215,0,0.06) 260deg, transparent 280deg, rgba(255,215,0,0.06) 300deg, transparent 320deg, rgba(255,215,0,0.06) 340deg, transparent 360deg);
+  animation: introRays 2s ease forwards, spinRays 20s linear infinite;
+  opacity: 0;
+}
+@keyframes introRays { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes spinRays { to { transform: rotate(360deg); } }
+
+/* === PARTICLE CANVAS === */
+#goldParticles {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+}
+
+/* === KING WATERMARK === */
+.king-ghost {
+  position: absolute; pointer-events: none; z-index: 0;
+  opacity: 0.04; filter: blur(1px);
+  border-radius: 50%;
+}
+.king-ghost img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* === METALLIC TEXT === */
+.metallic-text {
+  background: linear-gradient(135deg, #8B6914 0%, #D4AF37 15%, #FFD700 40%, #FFF8DC 50%, #FFD700 60%, #D4AF37 85%, #8B6914 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* === NAV === */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  background: rgba(5,5,24,0.5); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); transition: all 0.3s;
+}
+nav.scrolled {
+  background: rgba(5,5,24,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-gold);
+}
+.logo {
+  font-size: 20px; font-weight: 700; letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--white); text-decoration: none;
+}
+.logo-img {
+  width: 38px; height: 38px; border-radius: 8px; object-fit: cover;
+  box-shadow: 0 2px 16px rgba(255,215,0,0.3), 0 0 0 1px rgba(255,215,0,0.1);
+  transition: transform 0.3s;
+}
+.logo:hover .logo-img { transform: scale(1.1) rotate(-3deg); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none;
+  font-size: 14px; font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-links a.active { color: var(--gold); }
+.nav-cta {
+  padding: 10px 24px; background: transparent;
+  border: 1px solid var(--border-gold-hover); border-radius: 8px;
+  color: var(--gold); font-size: 13px; font-weight: 600;
+  cursor: none; transition: all 0.2s; font-family: inherit;
+}
+.nav-cta:hover {
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914);
+  color: #050518; border-color: transparent;
+  box-shadow: 0 2px 20px rgba(255,215,0,0.4);
+}
+
+/* === HERO === */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 24px 80px; overflow: hidden;
+}
+
+/* Giant king light rays behind hero */
+.hero-rays {
+  position: absolute; top: 50%; left: 50%;
+  width: 900px; height: 900px; transform: translate(-50%, -50%);
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.04) 10deg, transparent 30deg, rgba(255,215,0,0.03) 50deg, transparent 70deg, rgba(255,215,0,0.04) 90deg, transparent 110deg, rgba(255,215,0,0.03) 130deg, transparent 150deg, rgba(255,215,0,0.04) 170deg, transparent 190deg, rgba(255,215,0,0.03) 210deg, transparent 230deg, rgba(255,215,0,0.04) 250deg, transparent 270deg, rgba(255,215,0,0.03) 290deg, transparent 310deg, rgba(255,215,0,0.04) 330deg, transparent 350deg);
+  animation: spinRays 40s linear infinite;
+  z-index: 0; pointer-events: none;
+}
+
+/* Hero king aura */
+.hero-aura {
+  position: absolute; top: 50%; left: 50%;
+  width: 400px; height: 400px; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(212,175,55,0.04) 40%, transparent 70%);
+  border-radius: 50%; z-index: 1; pointer-events: none;
+  animation: auraPulse 4s ease-in-out infinite;
+}
+@keyframes auraPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.hero-content { position: relative; z-index: 3; max-width: 720px; }
+
+/* The King centerpiece */
+.hero-king {
+  width: 180px; height: 180px; margin: 0 auto 40px;
+  position: relative; z-index: 3;
+}
+.hero-king img {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 28px;
+  box-shadow: 0 8px 60px rgba(255,215,0,0.25), 0 0 0 1px rgba(255,215,0,0.15);
+  animation: kingFloat 5s ease-in-out infinite;
+}
+.hero-king::before {
+  content: ''; position: absolute; inset: -20px;
+  background: radial-gradient(circle, rgba(255,215,0,0.15), transparent 70%);
+  border-radius: 40px; z-index: -1;
+  animation: kingGlow 3s ease-in-out infinite alternate;
+}
+@keyframes kingFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(0.5deg); }
+}
+@keyframes kingGlow {
+  0% { opacity: 0.6; } 100% { opacity: 1; }
+}
+
+.hero-badge {
+  display: inline-block; padding: 6px 18px;
+  background: rgba(212,175,55,0.05);
+  border: 1px solid var(--border-gold-hover);
+  border-radius: 100px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px;
+}
+.hero-badge .metallic-text { font-size: 12px; }
+.hero h1 {
+  font-size: clamp(40px, 6vw, 64px); font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 20px;
+}
+.hero p {
+  font-size: 18px; color: var(--text-muted);
+  line-height: 1.6; margin-bottom: 40px;
+}
+
+/* EMAIL FORM */
+.email-form { display: flex; gap: 12px; max-width: 480px; margin: 0 auto; }
+.email-form input {
+  flex: 1; padding: 14px 20px;
+  background: rgba(255,255,255,0.025); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--white); font-size: 15px;
+  font-family: inherit; outline: none; transition: border-color 0.2s;
+  cursor: none;
+}
+.email-form input::placeholder { color: var(--text-dim); }
+.email-form input:focus { border-color: var(--border-gold-hover); }
+.email-form button {
+  padding: 14px 28px; border: none; border-radius: 10px;
+  color: #050518; font-size: 14px; font-weight: 700;
+  cursor: none; white-space: nowrap; font-family: inherit;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
+  box-shadow: 0 2px 20px rgba(255,215,0,0.3), inset 0 1px 0 rgba(255,255,255,0.45);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.email-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(255,215,0,0.45), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.form-msg { margin-top: 16px; font-size: 14px; color: var(--gold); display: none; }
+.form-msg.show { display: block; }
+
+/* PROGRESS */
+.progress-section { margin-top: 48px; }
+.progress-label {
+  font-size: 13px; color: var(--text-dim); margin-bottom: 12px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.progress-bar {
+  width: 100%; max-width: 480px; height: 4px;
+  background: rgba(255,255,255,0.05); border-radius: 100px;
+  overflow: hidden; margin: 0 auto;
+}
+.progress-fill {
+  height: 100%; width: 2%;
+  background: linear-gradient(90deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
+  border-radius: 100px; transition: width 0.8s ease;
+  box-shadow: 0 0 12px rgba(255,215,0,0.4);
+}
+.progress-count { margin-top: 12px; font-size: 14px; color: var(--text-muted); }
+.progress-count .gold { font-weight: 600; }
+
+/* === CROWN DIVIDER === */
+.crown-divider {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; padding: 20px 0; position: relative; z-index: 2;
+}
+.crown-divider .line {
+  flex: 1; max-width: 200px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+}
+.crown-divider svg { width: 28px; height: 28px; opacity: 0.5; }
+
+/* === TRUST BAR === */
+.trust-bar {
+  display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+  padding: 40px 24px; border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); position: relative; z-index: 2;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border); border-radius: 100px;
+  font-size: 13px; color: var(--text-muted);
+}
+.trust-pill .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: linear-gradient(135deg, #8B6914, #FFD700);
+  box-shadow: 0 0 6px rgba(212,175,55,0.4);
+}
+
+/* === SECTIONS === */
+section { padding: 100px 24px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header h2 {
+  font-size: clamp(28px, 4vw, 42px); font-weight: 700;
+  letter-spacing: -0.02em; position: relative; display: inline-block;
+}
+.section-header .highlight {
+  position: absolute; left: -4px; top: 4px;
+  width: calc(100% + 8px); height: 60%;
+  background: rgba(212,175,55,0.1); border-radius: 4px; z-index: -1;
+}
+.section-header p { margin-top: 12px; color: var(--text-muted); font-size: 16px; }
+
+/* === HOW IT WORKS === */
+.how-card {
+  position: relative; background: var(--navy-mid);
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 56px 48px; overflow: hidden;
+}
+.how-card::before {
+  content: ''; position: absolute; bottom: -60px; right: -60px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%);
+}
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; position: relative; z-index: 2; }
+.step { text-align: center; }
+.step-num {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: #050518;
+  margin: 0 auto 20px;
+  box-shadow: 0 2px 12px rgba(255,215,0,0.3), inset 0 1px 0 rgba(255,255,255,0.45);
+}
+.step h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.step p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* === QUOTES === */
+.quotes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.quote-card {
+  position: relative; background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 40px 32px; overflow: hidden;
+  transition: border-color 0.3s, background 0.3s, transform 0.3s;
+}
+.quote-card::before {
+  content: ''; position: absolute; bottom: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(212,175,55,0.05), transparent 70%);
+}
+.quote-card:hover {
+  border-color: var(--border-gold-hover);
+  background: rgba(255,255,255,0.035);
+  transform: translateY(-4px);
+}
+.quote-mark {
+  font-size: 40px; font-family: Georgia, serif; line-height: 1; margin-bottom: 16px;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #D4AF37, #8B6914);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.quote-card p { font-size: 16px; color: var(--white); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 2; }
+.quote-attr {
+  font-size: 13px; font-weight: 500;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* === TOURNAMENTS === */
+.tourn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.tourn-card {
+  position: relative; background: var(--navy-mid);
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 36px 32px; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.tourn-card:hover { border-color: var(--border-gold-hover); transform: translateY(-4px); }
+.tourn-card.live { border-color: rgba(255,215,0,0.3); }
+.tourn-badge {
+  display: inline-block; padding: 4px 12px; font-size: 11px;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  border-radius: 100px; margin-bottom: 20px;
+}
+.tourn-badge.live { background: rgba(255,215,0,0.1); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+.tourn-badge.upcoming { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border); }
+.tourn-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.tourn-card .date { font-size: 14px; color: var(--gold); margin-bottom: 16px; }
+.tourn-card .desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.tourn-card .prize {
+  font-size: 24px; font-weight: 800;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.tourn-card .prize-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* === FOOTER === */
+footer {
+  position: relative; text-align: center; padding: 100px 24px 60px;
+  border-top: 1px solid var(--border); overflow: hidden;
+}
+footer .king-throne {
+  width: 80px; height: 80px; margin: 0 auto 24px;
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 30px rgba(255,215,0,0.2);
+  animation: kingFloat 4s ease-in-out infinite;
+}
+footer .king-throne img { width: 100%; height: 100%; object-fit: cover; }
+footer .logo {
+  justify-content: center; margin-bottom: 16px;
+  display: inline-flex;
+}
+footer p { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+footer .copyright { font-size: 12px; color: var(--text-dim); margin-top: 24px; }
+footer .tagline {
+  font-size: 16px; font-weight: 600; margin-bottom: 20px;
+  background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* === KING GHOST BACKGROUNDS === */
+.section-king-bg {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px; height: 500px;
+  pointer-events: none; z-index: 0;
+  opacity: 0.025;
+}
+.section-king-bg img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: blur(2px); }
+
+/* === REVEAL ANIMATION === */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* === MOBILE === */
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  .steps { grid-template-columns: 1fr; gap: 32px; }
+  .quotes-grid { grid-template-columns: 1fr; }
+  .tourn-grid { grid-template-columns: 1fr; }
+  .hero-king { width: 140px; height: 140px; }
+  body { cursor: auto; }
+  #kingCursor, #kingCursorDot { display: none; }
+  .email-form { flex-direction: column; }
+  .how-card { padding: 36px 24px; }
+}
+
+/* === KING LOGO INTERACTIVE HOVER === */
+.logo {
+  position: relative; perspective: 200px;
+}
+.logo-img {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s, filter 0.4s;
+  will-change: transform;
+}
+.logo:hover .logo-img {
+  transform: scale(1.35) rotateY(360deg);
+  box-shadow: 0 4px 40px rgba(255,215,0,0.6), 0 0 0 2px rgba(255,215,0,0.25);
+  filter: brightness(1.15) saturate(1.2);
+}
+/* Gold ring pulse on hover */
+.logo-ring {
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  border-radius: 8px; pointer-events: none;
+  opacity: 0;
+}
+.logo:hover .logo-ring {
+  animation: logoRing 0.8s ease-out;
+}
+@keyframes logoRing {
+  0% { opacity: 0.8; transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255,215,0,0.5); }
+  100% { opacity: 0; transform: translateY(-50%) scale(2.5); box-shadow: 0 0 0 8px rgba(255,215,0,0); }
+}
+/* Second ring for double pulse */
+.logo:hover .logo-ring-2 {
+  animation: logoRing 0.8s 0.15s ease-out;
+}
+.logo-ring-2 {
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  border-radius: 8px; pointer-events: none;
+  opacity: 0;
+}
+/* Energy glow behind logo on hover */
+.logo-glow {
+  position: absolute; left: -5px; top: 50%;
+  transform: translateY(-50%);
+  width: 48px; height: 48px;
+  border-radius: 12px; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.logo:hover .logo-glow { opacity: 1; }
+
+/* === HERO KING 3D TILT === */
+.hero-king {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+  cursor: none;
+}
+.hero-king img {
+  transition: filter 0.3s, box-shadow 0.3s;
+}
+.hero-king:hover img {
+  filter: brightness(1.2) saturate(1.3);
+  box-shadow: 0 12px 80px rgba(255,215,0,0.4), 0 0 0 1px rgba(255,215,0,0.25);
+}
+/* Shockwave on click */
+.king-shockwave {
+  position: absolute; top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  border: 2px solid rgba(255,215,0,0.6);
+  border-radius: 28px; pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+}
+.king-shockwave.active {
+  animation: shockwave 0.8s ease-out;
+}
+@keyframes shockwave {
+  0% { opacity: 0.8; transform: translate(-50%,-50%) scale(1); border-width: 3px; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(2.5); border-width: 0; }
+}
+
+/* === FOOTER KING HOVER === */
+footer .king-throne {
+  cursor: none;
+  transition: transform 0.4s, box-shadow 0.4s;
+}
+footer .king-throne:hover {
+  transform: translateY(-8px) scale(1.1);
+  box-shadow: 0 12px 50px rgba(255,215,0,0.35);
+}
+footer .king-throne::after {
+  content: ''; position: absolute; inset: -10px;
+  border-radius: 20px; pointer-events: none;
+  border: 1px solid rgba(255,215,0,0.2);
+  opacity: 0; transition: opacity 0.4s;
+}
+footer .king-throne:hover::after { opacity: 1; }
+
+</style>
+</head>
+<body>
+
+<!-- INTRO OVERLAY -->
+<div id="intro">
+  <div id="introRays"></div>
+  <img id="introKing" src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX">
+</div>
+
+<!-- KING CURSOR -->
+<div id="kingCursor"></div>
+<div id="kingCursorDot"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="goldParticles"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" class="logo-img" alt="FORTREX"> FORTREX</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="tournaments.html">Championships</a></li>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('emailInput').focus()">Join Waitlist</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-rays"></div>
+  <div class="hero-aura"></div>
+  <div class="hero-content">
+    <div class="hero-king">
+      <img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX King">
+    </div>
+    <div class="hero-badge"><span class="metallic-text">Genesis Championship — August 23</span></div>
+    <h1>Where Traders Become <span class="metallic-text">Kings</span></h1>
+    <p>Compete in verified trading championships. Climb the leaderboard. Earn your crown.</p>
+    <form class="email-form" id="waitlistForm">
+      <input type="email" id="emailInput" placeholder="your@email.com" required>
+      <button type="submit">Reserve My Spot</button>
+    </form>
+    <div class="form-msg" id="formMsg"></div>
+    <div class="progress-section">
+      <div class="progress-label">Waitlist Progress</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-count"><span class="gold" id="progressCount">0</span> / 10,000 traders registered</div>
+    </div>
+  </div>
+</div>
+
+<!-- CROWN DIVIDER -->
+<div class="crown-divider">
+  <div class="line"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5">
+    <path d="M5 16L3 7l5.5 4L12 4l3.5 7L21 7l-2 9H5zm0 2h14v2H5v-2z" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="line"></div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-pill"><span class="dot"></span> MT4/MT5 Verified Results</div>
+  <div class="trust-pill"><span class="dot"></span> Real Prize Pools</div>
+  <div class="trust-pill"><span class="dot"></span> Community Ranked</div>
+  <div class="trust-pill"><span class="dot"></span> Zero Entry Fee</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-king-bg"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png"></div>
+  <div class="section-header reveal">
+    <h2>How The <span class="metallic-text">Kingdom</span> Works</h2><p>Three steps to the throne.</p>
+  </div>
+  <div class="how-card reveal">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Join the Community</h3>
+        <p>Sign up for the waitlist. Get your invite link when the gates open. Enter the Discord arena.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Verify & Compete</h3>
+        <p>Link your MT4/MT5 account. Your trades are verified in real-time. Every position counts toward your rank.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Climb & Conquer</h3>
+        <p>Rise on the leaderboard with your ROI. Top traders take the prize pool. The king takes the crown.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CROWN DIVIDER -->
+<div class="crown-divider">
+  <div class="line"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5">
+    <path d="M5 16L3 7l5.5 4L12 4l3.5 7L21 7l-2 9H5zm0 2h14v2H5v-2z" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="line"></div>
+</div>
+
+<!-- QUOTES -->
+<section id="quotes">
+  <div class="section-king-bg"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png"></div>
+  <div class="section-header reveal"><h2>Voices From The <span class="metallic-text">Arena</span></h2></div>
+  <div class="quotes-grid">
+    <div class="quote-card reveal">
+      <div class="quote-mark">"</div>
+      <p>The verification system is what sold me. Every trade is real, every ROI is verifiable. No fake leaderboards here.</p>
+      <div class="quote-attr">— Arjun M., Mumbai</div>
+    </div>
+    <div class="quote-card reveal">
+      <div class="quote-mark">"</div>
+      <p>I went from paper trading to competing in a real championship in two weeks. The competitive format made me a better trader.</p>
+      <div class="quote-attr">— Sneha R., Bangalore</div>
+    </div>
+    <div class="quote-card reveal">
+      <div class="quote-mark">"</div>
+      <p>The REX economy keeps me coming back daily. Check-ins, streaks, rewards — it's like a game where your actual trading skills matter.</p>
+      <div class="quote-attr">— Karthik V., Chennai</div>
+    </div>
+  </div>
+</section>
+
+<!-- CROWN DIVIDER -->
+<div class="crown-divider">
+  <div class="line"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5">
+    <path d="M5 16L3 7l5.5 4L12 4l3.5 7L21 7l-2 9H5zm0 2h14v2H5v-2z" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="line"></div>
+</div>
+
+<!-- TOURNAMENTS -->
+<section id="tournaments">
+  <div class="section-king-bg"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png"></div>
+  <div class="section-header reveal"><h2>Upcoming <span class="metallic-text">Championships</span></h2><p>Three tournaments. One year. Real prizes.</p></div>
+  <div class="tourn-grid">
+    <div class="tourn-card live reveal">
+      <div class="tourn-badge live">Registration Open</div>
+      <h3>Genesis Championship</h3>
+      <div class="date">August 23, 2026</div>
+      <div class="desc">The inaugural tournament. Open to all verified traders. No entry fee. Compete on pure ROI.</div>
+      <div class="prize" id="prize1">—</div>
+      <div class="prize-label">Prize Pool (grows with community)</div>
+    </div>
+    <div class="tourn-card reveal">
+      <div class="tourn-badge upcoming">Coming Soon</div>
+      <h3>September Showdown</h3>
+      <div class="date">September 2026</div>
+      <div class="desc">Top performers from Genesis get automatic entry. New traders can qualify through weekly challenges.</div>
+      <div class="prize" id="prize2">—</div>
+      <div class="prize-label">Prize Pool (grows with community)</div>
+    </div>
+    <div class="tourn-card reveal">
+      <div class="tourn-badge upcoming">Coming Soon</div>
+      <h3>October Outlier Cup</h3>
+      <div class="date">October 2026</div>
+      <div class="desc">The tournament for risk-managed traders. Highest risk-adjusted returns win. Consistency beats luck.</div>
+      <div class="prize" id="prize3">—</div>
+      <div class="prize-label">Prize Pool (grows with community)</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="king-throne">
+    <img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX King">
+  </div>
+  <a href="index.html" class="logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" class="logo-img" alt="FORTREX"> FORTREX</a>
+  <p class="tagline">The King Awaits</p>
+  <p>Trading Competition Community · Verified Results · Real Prize Pools</p>
+  <p class="copyright">© 2026 FORTREX. All rights reserved.</p>
+</footer>
+
+<script>
+// === INTRO ANIMATION ===
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('intro').classList.add('gone');
+  }, 1800);
+});
+
+// === KING CURSOR ===
+const cursor = document.getElementById('kingCursor');
+const cursorDot = document.getElementById('kingCursorDot');
+let mx = 0, my = 0, cx = 0, cy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cx += (mx - cx) * 0.15;
+  cy += (my - cy) * 0.15;
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
+  cursorDot.style.left = mx + 'px';
+  cursorDot.style.top = my + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a, button, input').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+// === GOLD PARTICLE SYSTEM ===
+const canvas = document.getElementById('goldParticles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); this.y = Math.random() * canvas.height; }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + Math.random() * 100;
+    this.size = Math.random() * 2 + 0.5;
+    this.speed = Math.random() * 0.5 + 0.2;
+    this.opacity = Math.random() * 0.4 + 0.1;
+    this.sway = Math.random() * 0.5 - 0.25;
+    this.swayOffset = Math.random() * Math.PI * 2;
+    this.life = 0;
+  }
+  update() {
+    this.y -= this.speed;
+    this.life += 0.01;
+    this.x += Math.sin(this.life + this.swayOffset) * this.sway;
+    if (this.y < -10) this.reset();
+  }
+  draw() {
+    const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+    grd.addColorStop(0, `rgba(255,215,0,${this.opacity})`);
+    grd.addColorStop(0.5, `rgba(212,175,55,${this.opacity * 0.5})`);
+    grd.addColorStop(1, 'rgba(212,175,55,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(255,248,220,${this.opacity * 1.5})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// === NAV SCROLL ===
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// === REVEAL ON SCROLL ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// === WAITLIST FORM ===
+const form = document.getElementById('waitlistForm');
+const msg = document.getElementById('formMsg');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('emailInput').value;
+  msg.classList.remove('show');
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/saveWaitlistEntry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'teaser', country: 'IN' })
+    });
+    const data = await res.json();
+    if (data.success) {
+      msg.textContent = data.duplicate ? "You're already on the list! 🏆" : "Your spot is reserved. Welcome to the arena. 👑";
+      msg.style.color = '#FFD700';
+      document.getElementById('emailInput').value = '';
+      loadWaitlistCount();
+    } else {
+      msg.textContent = data.message || 'Something went wrong.';
+      msg.style.color = '#ff4444';
+    }
+  } catch (err) {
+    msg.textContent = 'Network error. Try again.';
+    msg.style.color = '#ff4444';
+  }
+  msg.classList.add('show');
+});
+
+// === WAITLIST COUNT ===
+async function loadWaitlistCount() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getWaitlistCount');
+    const data = await res.json();
+    if (data.success) {
+      const count = data.count || 0;
+      const pct = Math.min((count / 10000) * 100, 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = count.toLocaleString();
+    }
+  } catch (err) { console.log('count error', err); }
+}
+
+// === TOURNAMENTS DATA ===
+async function loadTournaments() {
+  try {
+    const res = await fetch('https://base44.app/api/apps/6a79d5cea765bcf565bf27b6/functions/getTournaments');
+    const data = await res.json();
+    if (data.success && data.tournaments && data.tournaments.length > 0) {
+      const cards = document.querySelectorAll('.tourn-card');
+      data.tournaments.forEach((t, i) => {
+        if (cards[i]) {
+          const h3 = cards[i].querySelector('h3');
+          const date = cards[i].querySelector('.date');
+          const desc = cards[i].querySelector('.desc');
+          if (h3) h3.textContent = t.name || h3.textContent;
+          if (date) date.textContent = t.startDate ? new Date(t.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : date.textContent;
+          if (desc) desc.textContent = t.description || desc.textContent;
+          if (t.registeredCount) {
+            const card = cards[i];
+            const existing = card.querySelector('.registered');
+            if (!existing) {
+              const reg = document.createElement('div');
+              reg.className = 'registered';
+              reg.style.cssText = 'font-size:13px;color:var(--text-muted);margin-top:12px;';
+              reg.textContent = `${t.registeredCount} / ${t.maxParticipants || '∞'} registered`;
+              card.appendChild(reg);
+            }
+          }
+        }
+      });
+    }
+  } catch (err) { console.log('tournament error', err); }
+}
+
+loadWaitlistCount();
+loadTournaments();
+</script>
+<script>
+
+// === LOGO PARTICLE BURST ===
+function createLogoBurst(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:4px;height:4px;border-radius:50%;background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
+    const angle = (Math.PI * 2 * i) / 12;
+    const dist = 30 + Math.random() * 40;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    p.animate([
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
+    ], { duration: 600 + Math.random() * 300, easing: 'cubic-bezier(0.2,0.8,0.4,1)' });
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 900);
+  }
+}
+
+// Attach burst to all logos
+document.querySelectorAll('.logo').forEach(logo => {
+  logo.addEventListener('mouseenter', () => {
+    createLogoBurst(logo.querySelector('.logo-img') || logo);
+    // Add rings if not present
+    if (!logo.querySelector('.logo-ring')) {
+      const ring = document.createElement('div');
+      ring.className = 'logo-ring';
+      logo.insertBefore(ring, logo.firstChild);
+      const ring2 = document.createElement('div');
+      ring2.className = 'logo-ring-2';
+      logo.insertBefore(ring2, logo.firstChild);
+      const glow = document.createElement('div');
+      glow.className = 'logo-glow';
+      logo.insertBefore(glow, logo.firstChild);
+    }
+  });
+});
+
+// === HERO KING 3D TILT ===
+const heroKing = document.querySelector('.hero-king');
+if (heroKing) {
+  const kingImg = heroKing.querySelector('img');
+  heroKing.addEventListener('mousemove', (e) => {
+    const rect = heroKing.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+    const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+    heroKing.style.transform = `perspective(800px) rotateY(${x * 20}deg) rotateX(${-y * 20}deg) scale(1.08)`;
+  });
+  heroKing.addEventListener('mouseleave', () => {
+    heroKing.style.transform = '';
+  });
+  // Click shockwave
+  heroKing.addEventListener('click', () => {
+    const sw = document.createElement('div');
+    sw.className = 'king-shockwave active';
+    heroKing.appendChild(sw);
+    setTimeout(() => sw.remove(), 800);
+    // Big particle burst
+    const rect = heroKing.getBoundingClientRect();
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;width:${3 + Math.random() * 4}px;height:${3 + Math.random() * 4}px;border-radius:50%;background:#FFD700;box-shadow:0 0 8px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 80 + Math.random() * 120;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      p.animate([
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
+      ], { duration: 800 + Math.random() * 400, easing: 'cubic-bezier(0.2,0.8,0.4,1)' });
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1200);
+    }
+  });
+}
+
+// === FOOTER KING BURST ===
+const footerKing = document.querySelector('footer .king-throne');
+if (footerKing) {
+  footerKing.addEventListener('click', () => {
+    const rect = footerKing.getBoundingClientRect();
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top}px;width:4px;height:4px;border-radius:50%;background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI;
+      const dist = 40 + Math.random() * 60;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      p.animate([
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
+      ], { duration: 700 + Math.random() * 300, easing: 'ease-out' });
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1000);
+    }
+  });
+}
+
+</script>
+</body>
+</html>
