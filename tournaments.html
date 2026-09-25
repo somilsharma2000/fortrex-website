@@ -3,510 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FORTREX — Championships</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>FORTREX — Tournaments</title>
+<meta name="description" content="FORTREX skill tournaments: ROI-based competition on your own broker account. Your capital stays yours. We run the arena.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-
-
-:root {
-  --bg-primary: #0A0E1A;
-  --bg-card: rgba(255,255,255,0.025);
-  --navy-mid: #141B2D;
-  --white: #FFFFFF;
-  --text-muted: rgba(255,255,255,0.75);
-  --text-dim: rgba(255,255,255,0.5);
-  --border: rgba(255,255,255,0.05);
-  --border-gold: rgba(212,175,55,0.1);
-  --border-gold-hover: rgba(255,215,0,0.4);
-  --gold: #D4AF37;
-  --gold-deep: #8B6914;
-  --gold-light: #FFD700;
-  --gold-pale: #FFD700;
-  --gold-shine: #FFF8DC;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #0A0E1A; color: #FFFFFF; font-family: 'Inter', -apple-system, sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-
-.metallic-text {
-  background: linear-gradient(135deg, #8B6914 0%, #D4AF37 15%, #FFD700 40%, #FFF8DC 50%, #FFD700 60%, #D4AF37 85%, #8B6914 100%);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-#symbolMatrix { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; }
-
-.corner-glow { position: fixed; width: 600px; height: 600px; pointer-events: none; z-index: 1; border-radius: 50%; filter: blur(90px); opacity: 0.12; }
-.corner-glow.tl { top: -200px; left: -200px; background: radial-gradient(circle, #D4AF37, transparent 70%); }
-.corner-glow.br { bottom: -200px; right: -200px; background: radial-gradient(circle, #FFD700, transparent 70%); }
-
-/* NAV */
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,14,26,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); transition: all 0.3s; }
-nav.scrolled { background: rgba(10,14,26,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(212,175,55,0.1); }
-.logo { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; color: #FFFFFF; text-decoration: none; }
-.logo-mark { width: 28px; height: 28px; background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #D4AF37, #8B6914); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #0A0E1A; font-weight: 800; box-shadow: 0 2px 8px rgba(255,215,0,0.35); }
-
-.logo-img {
-  width: 36px; height: 36px; border-radius: 8px; object-fit: cover;
-  box-shadow: 0 2px 12px rgba(255,215,0,0.3);
-  transition: transform 0.2s;
-}
-.logo-img:hover { transform: scale(1.05); }
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
-.nav-links a:hover { color: #FFFFFF; }
-.nav-links a.active { color: #D4AF37; }
-.nav-cta { padding: 10px 24px; background: transparent; border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; color: #D4AF37; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-.nav-cta:hover { background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); color: #0A0E1A; border-color: transparent; box-shadow: 0 2px 16px rgba(255,215,0,0.3); }
-
-.page-header { position: relative; padding: 160px 24px 80px; text-align: center; z-index: 2; }
-.page-header h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
-.page-header p { color: rgba(255,255,255,0.8); font-size: 17px; }
-
-.filter-bar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 48px; position: relative; z-index: 2; padding: 0 24px; }
-.filter-btn { padding: 8px 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 100px; color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-.filter-btn:hover { color: #FFFFFF; border-color: rgba(255,255,255,0.12); }
-.filter-btn.active { background: rgba(212,175,55,0.08); border-color: rgba(255,215,0,0.4); color: #D4AF37; }
-
-.tournament-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 2; }
-.t-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px; transition: border-color 0.3s, background 0.3s, transform 0.3s; cursor: pointer; position: relative; overflow: hidden; }
-.t-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #D4AF37, #FFD700, #D4AF37, transparent); opacity: 0; transition: opacity 0.3s; }
-.t-card:hover { border-color: rgba(255,215,0,0.4); background: rgba(255,255,255,0.035); transform: translateY(-2px); }
-.t-card:hover::before { opacity: 1; }
-
-.t-status { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 20px; }
-.t-status.upcoming { background: rgba(212,175,55,0.06); border: 1px solid rgba(255,215,0,0.4); color: #D4AF37; }
-.t-status.registration_open { background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); color: #0A0E1A; box-shadow: 0 2px 12px rgba(255,215,0,0.3); border: none; }
-.t-status.live { background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); color: #0A0E1A; box-shadow: 0 2px 12px rgba(255,215,0,0.3); animation: pulse-gold 2s infinite; border: none; }
-.t-status.completed { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); }
-@keyframes pulse-gold { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
-.t-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-.t-card .date { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 24px; }
-.t-card .pool { font-size: 13px; margin-bottom: 20px; font-weight: 500; background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.t-rules { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
-.t-rule { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
-.t-rule .label { color: rgba(255,255,255,0.6); }
-.t-rule .val { color: #FFFFFF; }
-.t-rule .val.gold { background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-
-.t-detail { display: none; max-width: 700px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 2; }
-.t-detail.show { display: block; }
-.back-btn { background: none; border: none; color: rgba(255,255,255,0.75); font-size: 14px; cursor: pointer; margin-bottom: 24px; font-family: inherit; padding: 8px 0; }
-.back-btn:hover { color: #FFFFFF; }
-.detail-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 48px; position: relative; overflow: hidden; }
-.detail-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #D4AF37, #FFD700, #D4AF37, transparent); }
-.detail-card h2 { font-size: 28px; margin-bottom: 8px; }
-.detail-card .date { color: rgba(255,255,255,0.75); margin-bottom: 32px; }
-.detail-section { margin-bottom: 32px; }
-.detail-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #D4AF37; margin-bottom: 16px; }
-.detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 15px; }
-.detail-row .label { color: rgba(255,255,255,0.75); }
-.detail-row .val { color: #FFFFFF; }
-.detail-row .val.gold { background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #D4AF37, #8B6914); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.register-btn { width: 100%; padding: 16px; border: none; border-radius: 12px; color: #0A0E1A; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 24px; font-family: inherit; background: linear-gradient(135deg, #8B6914, #D4AF37, #FFD700, #FFF8DC, #FFD700, #D4AF37, #8B6914); box-shadow: 0 2px 16px rgba(255,215,0,0.3), inset 0 1px 0 rgba(255,255,255,0.45); transition: transform 0.15s, box-shadow 0.2s; }
-.register-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,215,0,0.4); }
-.register-btn.disabled { background: rgba(212,175,55,0.12); color: rgba(255,255,255,0.5); cursor: not-allowed; box-shadow: none; }
-.register-btn.disabled:hover { transform: none; box-shadow: none; }
-
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
-body.reveal-ready .reveal { opacity: 0; transform: translateY(30px); }
-body.reveal-ready .reveal.visible { opacity: 1; transform: translateY(0); }
-
-footer { padding: 60px 24px 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 2; }
-footer .logo { justify-content: center; margin-bottom: 16px; }
-footer p { font-size: 13px; color: rgba(255,255,255,0.5); }
-
-.fab { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; background: rgba(212,175,55,0.08); border: 1px solid rgba(255,215,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 90; color: #D4AF37; font-size: 18px; }
-.fab.show { opacity: 1; }
-.fab:hover { background: rgba(212,175,55,0.15); }
-
-@media (max-width: 768px) {
-  nav { padding: 16px 20px; }
-  .nav-links { display: none; }
-  .detail-card { padding: 32px 24px; }
-  .corner-glow { width: 300px; height: 300px; }
-}
-
-.hero-logo {
-  width: 100px; height: 100px; margin: 0 auto 24px;
-  border-radius: 20px; overflow: hidden;
-  box-shadow: 0 8px 40px rgba(255,215,0,0.2);
-  animation: logo-float 4s ease-in-out infinite;
-}
-.hero-logo img { width: 100%; height: 100%; object-fit: cover; }
-@keyframes logo-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-/* KING ECOSYSTEM */
-#goldParticles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-#kingCursor { position: fixed; width: 24px; height: 24px; border: 1.5px solid rgba(255,215,0,0.6); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
-#kingCursor.hover { width: 48px; height: 48px; border-color: rgba(255,215,0,0.9); }
-#kingCursorDot { position: fixed; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); box-shadow: 0 0 8px rgba(255,215,0,0.6); }
-.king-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 500px; height: 500px; pointer-events: none; z-index: 0; opacity: 0.025; }
-.king-ghost img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: blur(2px); }
-.crown-divider { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 20px 0; position: relative; z-index: 2; }
-.crown-divider .line { flex: 1; max-width: 200px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent); }
-.crown-divider svg { width: 28px; height: 28px; opacity: 0.5; }
-body { cursor: default; }
-@media (max-width: 768px) { body { cursor: auto !important; } #kingCursor, #kingCursorDot { display: none; } }
-
-
-/* === KING LOGO INTERACTIVE HOVER === */
-.logo {
-  position: relative; perspective: 200px;
-}
-.logo-img {
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.4s, filter 0.4s;
-  will-change: transform;
-}
-.logo:hover .logo-img {
-  transform: scale(1.35) rotateY(360deg);
-  box-shadow: 0 4px 40px rgba(255,215,0,0.6), 0 0 0 2px rgba(255,215,0,0.25);
-  filter: brightness(1.15) saturate(1.2);
-}
-/* Gold ring pulse on hover */
-.logo-ring {
-  position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 38px; height: 38px;
-  border-radius: 8px; pointer-events: none;
-  opacity: 0;
-}
-.logo:hover .logo-ring {
-  animation: logoRing 0.8s ease-out;
-}
-@keyframes logoRing {
-  0% { opacity: 0.8; transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255,215,0,0.5); }
-  100% { opacity: 0; transform: translateY(-50%) scale(2.5); box-shadow: 0 0 0 8px rgba(255,215,0,0); }
-}
-/* Second ring for double pulse */
-.logo:hover .logo-ring-2 {
-  animation: logoRing 0.8s 0.15s ease-out;
-}
-.logo-ring-2 {
-  position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 38px; height: 38px;
-  border-radius: 8px; pointer-events: none;
-  opacity: 0;
-}
-/* Energy glow behind logo on hover */
-.logo-glow {
-  position: absolute; left: -5px; top: 50%;
-  transform: translateY(-50%);
-  width: 48px; height: 48px;
-  border-radius: 12px; pointer-events: none;
-  background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%);
-  opacity: 0; transition: opacity 0.4s;
-}
-.logo:hover .logo-glow { opacity: 1; }
-
-/* === HERO KING 3D TILT === */
-.hero-king {
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease-out;
-  cursor: default;
-}
-.hero-king img {
-  transition: filter 0.3s, box-shadow 0.3s;
-}
-.hero-king:hover img {
-  filter: brightness(1.2) saturate(1.3);
-  box-shadow: 0 12px 80px rgba(255,215,0,0.4), 0 0 0 1px rgba(255,215,0,0.25);
-}
-/* Shockwave on click */
-.king-shockwave {
-  position: absolute; top: 50%; left: 50%;
-  width: 100%; height: 100%;
-  border: 2px solid rgba(255,215,0,0.6);
-  border-radius: 28px; pointer-events: none;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 0;
-}
-.king-shockwave.active {
-  animation: shockwave 0.8s ease-out;
-}
-@keyframes shockwave {
-  0% { opacity: 0.8; transform: translate(-50%,-50%) scale(1); border-width: 3px; }
-  100% { opacity: 0; transform: translate(-50%,-50%) scale(2.5); border-width: 0; }
-}
-
-/* === FOOTER KING HOVER === */
-footer .king-throne {
-  cursor: default;
-  transition: transform 0.4s, box-shadow 0.4s;
-}
-footer .king-throne:hover {
-  transform: translateY(-8px) scale(1.1);
-  box-shadow: 0 12px 50px rgba(255,215,0,0.35);
-}
-footer .king-throne::after {
-  content: ''; position: absolute; inset: -10px;
-  border-radius: 20px; pointer-events: none;
-  border: 1px solid rgba(255,215,0,0.2);
-  opacity: 0; transition: opacity 0.4s;
-}
-footer .king-throne:hover::after { opacity: 1; }
-
+:root{--obsidian:#050506;--graphite:#111114;--bone:#FFF7E6;--muted:#A99B7A;--gold:#D8A64D;--gold-bright:#F2D18A;--gold-deep:#C9973E;--hairline:rgba(242,209,138,.16);--hairline-strong:rgba(242,209,138,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--obsidian);color:var(--bone);-webkit-font-smoothing:antialiased}
+.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-.055em}
+.mono{font-family:'JetBrains Mono',monospace}
+.fortrex-shell{position:relative;isolation:isolate;min-height:100vh;background:radial-gradient(ellipse at 50% -8%,rgba(31,71,128,.16),transparent 32%),radial-gradient(circle at 80% 18%,rgba(87,32,125,.14),transparent 30%),radial-gradient(circle at 16% 55%,rgba(16,67,103,.12),transparent 28%),radial-gradient(circle at 78% 10%,rgba(46,40,23,.36),transparent 30%),#05050a}
+.grid-noise{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(242,209,138,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,209,138,.035) 1px,transparent 1px),linear-gradient(115deg,transparent 0 48%,rgba(65,170,255,.028) 49%,transparent 50%);background-size:56px 56px,56px 56px,220px 220px}
+.gold-text{background:linear-gradient(110deg,#fff7e6 0%,#f2d18a 30%,#c9973e 56%,#d8caff 82%,#80d9ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.eyebrow .em{color:var(--gold)}
+.glass{background:linear-gradient(145deg,rgba(18,23,38,.82),rgba(8,8,14,.76));backdrop-filter:blur(18px);border:1px solid var(--hairline);box-shadow:0 24px 80px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.06);border-radius:18px}
+.gold-border{border:1px solid rgba(242,209,138,.52);box-shadow:inset 0 0 0 1px rgba(201,151,62,.08),0 0 34px rgba(201,151,62,.08)}
+.primary-cta{display:inline-flex;align-items:center;gap:10px;justify-content:center;background:linear-gradient(135deg,#f2d18a,#c9973e);color:#160f05;font-weight:700;font-size:14px;letter-spacing:.04em;padding:16px 30px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 12px 28px rgba(201,151,62,.2);transition:transform .16s cubic-bezier(.23,1,.32,1),box-shadow .16s ease,filter .16s ease;text-decoration:none}
+.primary-cta:hover{transform:translateY(-2px);filter:brightness(1.07);box-shadow:0 16px 36px rgba(201,151,62,.3)}
+.ghost-cta{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--bone);font-weight:600;font-size:13px;letter-spacing:.06em;padding:14px 24px;border:1px solid var(--hairline-strong);border-radius:999px;cursor:pointer;text-decoration:none;transition:border-color .2s ease,background .2s ease}
+.ghost-cta:hover{border-color:var(--gold);background:rgba(242,209,138,.06)}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:linear-gradient(180deg,rgba(5,5,10,.88),rgba(5,5,10,.55));backdrop-filter:blur(14px);border-bottom:1px solid rgba(242,209,138,.08)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:34px;height:34px}
+.brand-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:.12em;color:var(--bone)}
+.nav-links{display:none;gap:26px;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.18em;font-weight:600;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-bright)}
+.nav-cta{padding:11px 22px;font-size:12px}
+@media(min-width:900px){.nav-links{display:flex}}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:70px 0}
+.hero-pad{padding-top:150px}
+.section-head{text-align:center;margin-bottom:44px}
+.section-head h2{font-size:clamp(30px,5vw,44px);font-weight:700;margin-top:14px}
+.arena-grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:900px){.arena-grid{grid-template-columns:repeat(3,1fr)}}
+.arena-card{padding:34px 28px;display:flex;flex-direction:column;gap:14px;transition:transform .25s cubic-bezier(.23,1,.32,1),border-color .25s}
+.arena-card:hover{transform:translateY(-4px);border-color:var(--hairline-strong)}
+.arena-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--gold);border:1px solid var(--hairline-strong);padding:5px 12px;border-radius:999px;align-self:flex-start}
+.arena-card h3{font-family:'Space Grotesk',sans-serif;font-size:21px}
+.arena-card p{color:var(--muted);font-size:13.5px;line-height:1.7}
+.arena-card p b{color:var(--bone);font-weight:600}
+.arena-stat{margin-top:auto;padding-top:16px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--muted)}
+.arena-stat b{color:var(--gold-bright);font-weight:600}
+.steps{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:900px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{display:flex;gap:16px;padding:24px;align-items:flex-start}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--gold);line-height:1;flex-shrink:0}
+.step h4{font-family:'Space Grotesk',sans-serif;font-size:16px;margin-bottom:6px}
+.step p{color:var(--muted);font-size:13px;line-height:1.65}
+footer{border-top:1px solid rgba(242,209,138,.09);padding:44px 22px 40px;margin-top:40px}
+.foot-grid{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:center}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{color:var(--muted);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+.foot-links a:hover{color:var(--gold-bright)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}}
 </style>
-<link rel="icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" type="image/png">
-<link rel="apple-touch-icon" href="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png">
-<style>body.js-active, body.js-active * { cursor: none !important; }</style>
 </head>
 <body>
+<div class="fortrex-shell">
+<div class="grid-noise"></div>
 
-<canvas id="goldParticles"></canvas>
-<div id="kingCursor"></div>
-<div id="kingCursorDot"></div>
-
-
-<canvas id="symbolMatrix"></canvas>
-<div class="corner-glow tl"></div>
-<div class="corner-glow br"></div>
-
-<nav id="nav">
-  <a href="index.html" class="logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" class="logo-img" alt="FORTREX"> FORTREX</a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="tournaments.html" class="active">Championships</a></li>
-    <li><a href="leaderboard.html">Leaderboard</a></li>
-    <li><a href="faq.html">FAQ</a></li>
-  </ul>
-  <button class="nav-cta">Join Waitlist</button>
+<nav>
+  <a class="brand" href="index.html"><img src="assets/fortrex-crown.png" alt="FORTREX"><span class="brand-name">FORTREX</span></a>
+  <div class="nav-links">
+    <a href="index.html#arena">THE ARENA</a>
+    <a href="tournaments.html" class="active">TOURNAMENTS</a>
+    <a href="leaderboard.html">LEADERBOARD</a>
+    <a href="faq.html">FAQ</a>
+  </div>
+  <button class="primary-cta nav-cta" onclick="location.href='index.html'">JOIN THE GENESIS LIST</button>
 </nav>
 
-<div class="page-header">
-  <div class="hero-logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" alt="FORTREX"></div>
-  <h1><span class="metallic-text">Championships</span></h1>
-  <p>Real competitions. Real verified results. Real prizes.</p>
-</div>
+<section class="hero-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">— TOURNAMENTS <span class="em">/ ARENAS</span></div>
+      <h2 class="display">Trade real. <span class="gold-text">Win real.</span></h2>
+      <p style="max-width:620px;margin:14px auto 0;color:var(--muted);font-size:15px;line-height:1.75;">Every arena is a contest of skill on <strong style="color:var(--bone)">your own broker account</strong>. We never hold your capital. We keep the leaderboard honest, and the winners take the prizes.</p>
+    </div>
 
-<div class="filter-bar">
-  <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="upcoming">Upcoming</button>
-  <button class="filter-btn" data-filter="registration_open">Open</button>
-  <button class="filter-btn" data-filter="live">Live</button>
-  <button class="filter-btn" data-filter="completed">Completed</button>
-</div>
+    <div class="arena-grid">
+      <div class="arena-card glass gold-border">
+        <span class="arena-tag">OPENING ARENA · 01</span>
+        <h3 class="display">The Genesis Cup.</h3>
+        <p>The first arena is reserved for <b>Genesis members only</b>. ROI-based scoring across a fixed window. Weight brackets keep it fair — a $500 account competes on the same terms as $50,000.</p>
+        <p>Winners split the first prize pool and take <b>founding-member titles</b> permanently.</p>
+        <div class="arena-stat"><span>ENTRY</span><b>GENESIS ONLY</b></div>
+      </div>
+      <div class="arena-card glass">
+        <span class="arena-tag">PHASE II · 02</span>
+        <h3 class="display">Weight-bracket leagues.</h3>
+        <p>Ongoing leagues by account size: Feather, Middle, and Heavy. Same skill test, different arenas. Leaderboards reset each season; <b>REX multipliers carry over</b>.</p>
+        <p>Consistency beats luck — scoring rewards discipline, not one lucky trade.</p>
+        <div class="arena-stat"><span>SEASONS</span><b>MONTHLY</b></div>
+      </div>
+      <div class="arena-card glass">
+        <span class="arena-tag">PHASE III · 03</span>
+        <h3 class="display">The funded finals.</h3>
+        <p>Season champions enter the finals. Top performers earn <b>funded-account placements</b> and Citadel status — the room you can't buy into.</p>
+        <p>Details are sealed until the gates open. Genesis members hear them first.</p>
+        <div class="arena-stat"><span>PRIZES</span><b>FUNDED SEATS</b></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="tournament-grid" id="tournamentGrid"></div>
-<div class="t-detail" id="tDetail"></div>
+<section style="padding-top:10px;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">— HOW IT WORKS <span class="em">/ THREE STEPS</span></div>
+      <h2 class="display">Three steps to the arena.</h2>
+    </div>
+    <div class="steps">
+      <div class="step glass"><div class="step-num">01</div><div><h4>Trade your own account.</h4><p>Your broker, your capital, your strategy. Connect read-only verification so the arena scores real trades — never screenshots.</p></div></div>
+      <div class="step glass"><div class="step-num">02</div><div><h4>Compete on skill.</h4><p>ROI-based, risk-adjusted scoring. Drawdown discipline counts as much as profit. No signal-selling, no copying — the leaderboard shows honest numbers.</p></div></div>
+      <div class="step glass"><div class="step-num">03</div><div><h4>Rise. Get paid.</h4><p>Prize pools, funded placements, REX rewards, and the Citadel circle for the proven. Every season compounds your standing.</p></div></div>
+    </div>
+    <div style="text-align:center;margin-top:44px;">
+      <a class="primary-cta" href="index.html">SECURE GENESIS CLEARANCE &nbsp;&#8594;</a>
+      <p class="mono" style="margin-top:16px;font-size:10px;letter-spacing:.3em;color:var(--muted)">THE FIRST ARENA IS GENESIS-ONLY · CAP 10,000</p>
+    </div>
+  </div>
+</section>
 
 <footer>
-  <a href="index.html" class="logo"><img src="https://media.base44.com/images/public/6a79d5cea765bcf565bf27b6/14528f2c1_generated_image.png" class="logo-img" alt="FORTREX"> FORTREX</a>
-  <p>&copy; 2026 FORTREX. Trading education community.</p>
+  <div class="foot-grid">
+    <a class="brand" href="index.html"><img src="assets/fortrex-crown.png" alt="" style="width:26px;height:26px"><span class="brand-name" style="font-size:14px">FORTREX</span></a>
+    <div class="foot-links">
+      <a href="index.html">HOME</a>
+      <a href="leaderboard.html">LEADERBOARD</a>
+      <a href="faq.html">FAQ</a>
+      <a href="legal.html">LEGAL</a>
+    </div>
+  </div>
 </footer>
-
-<div class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</div>
-
-<script>
-// SYMBOL MATRIX — canvas grid with diagonal density, metallic gold tones
-(function() {
-  const canvas = document.getElementById('symbolMatrix');
-  const ctx = canvas.getContext('2d');
-  const symbols = ['\u2191', '\u2193', '\u00B1', '%', '$', '\u25C8', '\u25B3', '\u25BD', '\u20AC', '\u00A5', '\u00A3'];
-  const gridSize = 44;
-  let cells = [], w, h, cols, rows;
-  function resize() {
-    w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight;
-    cols = Math.ceil(w / gridSize) + 1; rows = Math.ceil(h / gridSize) + 1;
-    cells = [];
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const px = x * gridSize, py = y * gridSize;
-        const cx = w / 2, cy = h / 2;
-        const diagDist = Math.abs((px - py)) / Math.max(w, h);
-        const centerDist = Math.sqrt((px - cx) ** 2 + (py - cy) ** 2) / Math.max(w, h);
-        const density = Math.max(0, 1 - centerDist * 1.4) + diagDist * 0.3;
-        cells.push({ x: px, y: py, sym: symbols[Math.floor(Math.random() * symbols.length)], phase: Math.random() * Math.PI * 2, speed: 0.3 + Math.random() * 0.6, baseOpacity: 0.02 + Math.random() * 0.12, size: 11 + Math.random() * 8, active: Math.random() < density * 0.45, colorShift: Math.random() });
-      }
-    }
-  }
-  function draw(t) {
-    ctx.clearRect(0, 0, w, h);
-    for (const cell of cells) {
-      if (!cell.active) continue;
-      const pulse = (Math.sin(t * 0.0005 * cell.speed + cell.phase) + 1) / 2;
-      const opacity = cell.baseOpacity * pulse;
-      if (opacity < 0.005) continue;
-      const r = 212 + cell.colorShift * 40, g = 175 + cell.colorShift * 50, b = 55 + cell.colorShift * 30;
-      ctx.font = `600 ${cell.size}px Inter, sans-serif`;
-      ctx.fillStyle = `rgba(${r.toFixed(0)},${g.toFixed(0)},${b.toFixed(0)},${opacity})`;
-      ctx.fillText(cell.sym, cell.x, cell.y);
-    }
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize', () => { clearTimeout(window._r); window._r = setTimeout(resize, 200); });
-  resize(); requestAnimationFrame(draw);
-})();
-
-const nav = document.getElementById('nav'), fab = document.getElementById('fab');
-window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); fab.classList.toggle('show', window.scrollY > 600); });
-
-const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
-
-const tournaments = [
-  { id: 1, name: "Genesis Championship", status: "upcoming", startDate: "Aug 23, 2026", endDate: "Aug 30, 2026", format: "ROI-based (TWRR)", entry: "Free (Waitlist Verified)", prize: "Variable Pool — funded by platform revenue", maxParticipants: 500, registeredCount: 0, duration: "7 days", verification: "MT4/MT5 Verified", rules: [ { label: "Format", val: "ROI-based (TWRR)" }, { label: "Duration", val: "7 days" }, { label: "Entry", val: "Free (Verified)", gold: true }, { label: "Max Traders", val: "500" }, { label: "Verification", val: "MT4/MT5" }, { label: "Prize Pool", val: "Variable", gold: true } ] },
-  { id: 2, name: "September Showdown", status: "upcoming", startDate: "Sep 15, 2026", endDate: "Sep 22, 2026", format: "ROI-based (TWRR)", entry: "Free (Verified Traders)", prize: "Variable Pool — funded by platform revenue", maxParticipants: 500, registeredCount: 0, duration: "7 days", verification: "MT4/MT5 Verified", rules: [ { label: "Format", val: "ROI-based (TWRR)" }, { label: "Duration", val: "7 days" }, { label: "Entry", val: "Free (Verified)", gold: true }, { label: "Max Traders", val: "500" }, { label: "Verification", val: "MT4/MT5" }, { label: "Prize Pool", val: "Variable", gold: true } ] },
-  { id: 3, name: "October Outlier Cup", status: "upcoming", startDate: "Oct 13, 2026", endDate: "Oct 20, 2026", format: "ROI-based (TWRR)", entry: "500 REX (Premium Entry)", prize: "Variable Pool — funded by platform revenue", maxParticipants: 500, registeredCount: 0, duration: "7 days", verification: "MT4/MT5 Verified", rules: [ { label: "Format", val: "ROI-based (TWRR)" }, { label: "Duration", val: "7 days" }, { label: "Entry", val: "500 REX", gold: true }, { label: "Max Traders", val: "500" }, { label: "Verification", val: "MT4/MT5" }, { label: "Prize Pool", val: "Variable", gold: true } ] }
-];
-
-const grid = document.getElementById('tournamentGrid'), detail = document.getElementById('tDetail');
-
-function renderCards(filter = 'all') {
-  grid.innerHTML = '';
-  const filtered = filter === 'all' ? tournaments : tournaments.filter(t => t.status === filter);
-  if (filtered.length === 0) { grid.innerHTML = `<p style="color:rgba(255,255,255,0.5);text-align:center;padding:40px;grid-column:1/-1;">No tournaments in this category yet.</p>`; return; }
-  filtered.forEach((t, i) => {
-    const card = document.createElement('div');
-    card.className = 't-card reveal';
-    card.style.transitionDelay = (i * 80) + 'ms';
-    card.innerHTML = `<span class="t-status ${t.status}">${t.status.replace('_',' ')}</span><h3>${t.name}</h3><p class="date">${t.startDate} — ${t.endDate}</p><p class="pool">${t.prize}</p><div class="t-rules">${t.rules.map(r => `<div class="t-rule"><span class="label">${r.label}</span><span class="val ${r.gold?'gold':''}">${r.val}</span></div>`).join('')}</div>`;
-    card.onclick = () => showDetail(t);
-    grid.appendChild(card); revealObserver.observe(card);
-  });
-  setTimeout(() => { document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }); }, 50);
-}
-
-function showDetail(t) {
-  grid.style.display = 'none'; document.querySelector('.filter-bar').style.display = 'none';
-  detail.classList.add('show');
-  detail.innerHTML = `<button class="back-btn" onclick="hideDetail()">&#8592; All tournaments</button><div class="detail-card"><span class="t-status ${t.status}">${t.status.replace('_',' ')}</span><h2>${t.name}</h2><p class="date">${t.startDate} — ${t.endDate}</p><div class="detail-section"><h3>Prize Pool</h3><p style="font-size:15px;" class="metallic-text">${t.prize}</p></div><div class="detail-section"><h3>Competition Rules</h3>${t.rules.map(r => `<div class="detail-row"><span class="label">${r.label}</span><span class="val ${r.gold?'gold':''}">${r.val}</span></div>`).join('')}</div><div class="detail-section"><h3>How It Works</h3><div class="detail-row"><span class="label">1. Register</span><span class="val">Join via Discord verification</span></div><div class="detail-row"><span class="label">2. Verify MT4/MT5</span><span class="val">Link your trading account</span></div><div class="detail-row"><span class="label">3. Trade</span><span class="val">Compete over 7 days</span></div><div class="detail-row"><span class="label">4. Leaderboard Reveals</span><span class="val">Results published after end</span></div></div><button class="register-btn ${t.status !== 'registration_open' ? 'disabled' : ''}" ${t.status !== 'registration_open' ? 'disabled' : ''}>${t.status === 'registration_open' ? 'Register Now' : 'Registration Not Open Yet'}</button></div>`;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function hideDetail() { detail.classList.remove('show'); grid.style.display = 'grid'; document.querySelector('.filter-bar').style.display = 'flex'; }
-
-document.querySelectorAll('.filter-btn').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderCards(btn.dataset.filter); }; });
-renderCards();
-</script>
-
-// KING CURSOR
-const cursor = document.getElementById('kingCursor');
-const cursorDot = document.getElementById('kingCursorDot');
-let mx=0,my=0,cx=0,cy=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-function animCursor(){cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;cursor.style.left=cx+'px';cursor.style.top=cy+'px';cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px';requestAnimationFrame(animCursor);}
-animCursor();
-document.querySelectorAll('a,button,input').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));});
-
-// GOLD PARTICLES
-const canvas = document.getElementById('goldParticles');
-const ctx = canvas.getContext('2d');
-let particles = [];
-function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-resize();window.addEventListener('resize',resize);
-class Particle{constructor(){this.reset();this.y=Math.random()*canvas.height;}
-reset(){this.x=Math.random()*canvas.width;this.y=canvas.height+Math.random()*100;this.size=Math.random()*2+0.5;this.speed=Math.random()*0.5+0.2;this.opacity=Math.random()*0.4+0.1;this.sway=Math.random()*0.5-0.25;this.swayOffset=Math.random()*Math.PI*2;this.life=0;}
-update(){this.y-=this.speed;this.life+=0.01;this.x+=Math.sin(this.life+this.swayOffset)*this.sway;if(this.y<-10)this.reset();}
-draw(){const grd=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,Math.max(0.1,this.size*3));grd.addColorStop(0,`rgba(255,215,0,${this.opacity})`);grd.addColorStop(0.5,`rgba(212,175,55,${this.opacity*0.5})`);grd.addColorStop(1,'rgba(212,175,55,0)');ctx.fillStyle=grd;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0.1,this.size*3),0,Math.PI*2);ctx.fill();ctx.fillStyle=`rgba(255,248,220,${this.opacity*1.5})`;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0.1,this.size),0,Math.PI*2);ctx.fill();}}
-for(let i=0;i<80;i++)particles.push(new Particle());
-function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animateParticles);}
-animateParticles();
-
-<script>
-
-// === LOGO PARTICLE BURST ===
-function createLogoBurst(el) {
-  const rect = el.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  for (let i = 0; i < 12; i++) {
-    const p = document.createElement('div');
-    p.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:4px;height:4px;border-radius:50%;background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
-    const angle = (Math.PI * 2 * i) / 12;
-    const dist = 30 + Math.random() * 40;
-    const dx = Math.cos(angle) * dist;
-    const dy = Math.sin(angle) * dist;
-    p.animate([
-      { transform: 'translate(0,0) scale(1)', opacity: 1 },
-      { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
-    ], { duration: 600 + Math.random() * 300, easing: 'cubic-bezier(0.2,0.8,0.4,1)' });
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 900);
-  }
-}
-
-// Attach burst to all logos
-document.querySelectorAll('.logo').forEach(logo => {
-  logo.addEventListener('mouseenter', () => {
-    createLogoBurst(logo.querySelector('.logo-img') || logo);
-    // Add rings if not present
-    if (!logo.querySelector('.logo-ring')) {
-      const ring = document.createElement('div');
-      ring.className = 'logo-ring';
-      logo.insertBefore(ring, logo.firstChild);
-      const ring2 = document.createElement('div');
-      ring2.className = 'logo-ring-2';
-      logo.insertBefore(ring2, logo.firstChild);
-      const glow = document.createElement('div');
-      glow.className = 'logo-glow';
-      logo.insertBefore(glow, logo.firstChild);
-    }
-  });
-});
-
-// === HERO KING 3D TILT ===
-const heroKing = document.querySelector('.hero-king');
-if (heroKing) {
-  const kingImg = heroKing.querySelector('img');
-  heroKing.addEventListener('mousemove', (e) => {
-    const rect = heroKing.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-    const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-    heroKing.style.transform = `perspective(800px) rotateY(${x * 20}deg) rotateX(${-y * 20}deg) scale(1.08)`;
-  });
-  heroKing.addEventListener('mouseleave', () => {
-    heroKing.style.transform = '';
-  });
-  // Click shockwave
-  heroKing.addEventListener('click', () => {
-    const sw = document.createElement('div');
-    sw.className = 'king-shockwave active';
-    heroKing.appendChild(sw);
-    setTimeout(() => sw.remove(), 800);
-    // Big particle burst
-    const rect = heroKing.getBoundingClientRect();
-    for (let i = 0; i < 30; i++) {
-      const p = document.createElement('div');
-      p.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;width:${3 + Math.random() * 4}px;height:${3 + Math.random() * 4}px;border-radius:50%;background:#FFD700;box-shadow:0 0 8px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 80 + Math.random() * 120;
-      const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist;
-      p.animate([
-        { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
-      ], { duration: 800 + Math.random() * 400, easing: 'cubic-bezier(0.2,0.8,0.4,1)' });
-      document.body.appendChild(p);
-      setTimeout(() => p.remove(), 1200);
-    }
-  });
-}
-
-// === FOOTER KING BURST ===
-const footerKing = document.querySelector('footer .king-throne');
-if (footerKing) {
-  footerKing.addEventListener('click', () => {
-    const rect = footerKing.getBoundingClientRect();
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top}px;width:4px;height:4px;border-radius:50%;background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,0.6);pointer-events:none;z-index:99998;`;
-      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI;
-      const dist = 40 + Math.random() * 60;
-      const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist;
-      p.animate([
-        { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
-      ], { duration: 700 + Math.random() * 300, easing: 'ease-out' });
-      document.body.appendChild(p);
-      setTimeout(() => p.remove(), 1000);
-    }
-  });
-}
-
-</script>
+</div>
 </body>
 </html>
