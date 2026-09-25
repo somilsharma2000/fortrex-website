@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// FORTREX attribution capture — persists ?ref and ?src across every page
+// so channel/referral tracking survives internal navigation and repeat visits.
+(function(){
+  try {
+    var qp = new URLSearchParams(window.location.search);
+    var ref = qp.get('ref');
+    var src = qp.get('src');
+    if (ref) localStorage.setItem('fortrex_ref', ref.toUpperCase());
+    if (src) localStorage.setItem('fortrex_src', src.toLowerCase().slice(0, 40));
+  } catch(e) {}
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -458,10 +472,15 @@ var API_MEMBER = API_BASE + '/fortrexGetMemberStatus';
 var SITE_URL = 'https://somilsharma2000.github.io/fortrex-website/';
 var pageLoadedAt = Date.now();
 var refFromUrl = '';
+var srcFromUrl = '';
 try {
   var qp = new URLSearchParams(window.location.search);
-  refFromUrl = (qp.get('ref') || '').toUpperCase();
-} catch(e) {}
+  // Prefer the current URL's params; fall back to what an earlier page on this
+  // visit already persisted (see the attribution snippet in <head>), so a
+  // ref/src captured on tournaments.html/faq.html etc. still counts here.
+  refFromUrl = (qp.get('ref') || localStorage.getItem('fortrex_ref') || '').toUpperCase();
+  srcFromUrl = (qp.get('src') || localStorage.getItem('fortrex_src') || 'direct').toLowerCase().slice(0, 40);
+} catch(e) { srcFromUrl = 'direct'; }
 
 // === MODAL ===
 function openModal() { document.getElementById('regModal').classList.add('active'); }
@@ -508,7 +527,7 @@ function submitForm() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: name, phone: fullPhone, email: email, country: country,
-      honeypot: hp, formTime: formTime, referredByCode: refFromUrl
+      honeypot: hp, formTime: formTime, referredByCode: refFromUrl, source: srcFromUrl
     })
   })
   .then(function(res) { return res.json(); })

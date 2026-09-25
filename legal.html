@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// FORTREX attribution capture — persists ?ref and ?src across every page
+// so channel/referral tracking survives internal navigation and repeat visits.
+(function(){
+  try {
+    var qp = new URLSearchParams(window.location.search);
+    var ref = qp.get('ref');
+    var src = qp.get('src');
+    if (ref) localStorage.setItem('fortrex_ref', ref.toUpperCase());
+    if (src) localStorage.setItem('fortrex_src', src.toLowerCase().slice(0, 40));
+  } catch(e) {}
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
