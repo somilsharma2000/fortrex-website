@@ -28,7 +28,7 @@ Endpoints (Base44 serverless, owned by the founder's Superagent app `vesper-d5af
 
 - `POST /functions/fortrexSaveWaitlistEntry` — body: `{ name, phone, email, country, honeypot, formTime, referredByCode }`. Success: `{ success:true, referralCode, position, memberNumber, message }`. Duplicates: `{ success:false, error:'already_registered', memberNumber, referralCode }`. Bot/honeypot submissions silently get fake success.
 - `GET /functions/fortrexGetWaitlistCount` — `{ success, count, remaining (cap 10,000), recent:[{name, joinedDate}] }` (5 latest).
-- `POST /functions/fortrexGetMemberStatus` — member lookup by referral code/email.
+- `POST /functions/fortrexGetMemberStatus` — member lookup by email (body: {email}) — returns memberNumber, referralCode, inviteCount.
 
 Data entity: `FortrexWaitlist` — fields: email, name, phone, country, referral_code, referred_by, position, invite_count, status ('genesis'), source, signup_date. Every record stores **source** (which page/form) and **referred_by** (whose referral code) for funnel analytics.
 
