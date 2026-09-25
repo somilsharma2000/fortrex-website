@@ -448,9 +448,13 @@ footer { border-top: 1px solid rgba(242,209,138,.09); padding: 44px 22px 40px; }
 
 <script>
 // === API ===
-var API_SAVE = 'https://vesper-d5af3674.base44.app/functions/fortrexSaveWaitlistEntry';
-var API_COUNT = 'https://vesper-d5af3674.base44.app/functions/fortrexGetWaitlistCount';
-var API_MEMBER = 'https://vesper-d5af3674.base44.app/functions/fortrexGetMemberStatus';
+// Backend switch: point this ONE line at the platform deployment when it is live
+// (e.g. 'https://fortrex-platform.vercel.app/api' — its /api/waitlist accepts the
+// same fields, including referredByCode, so nothing else changes).
+var API_BASE = 'https://vesper-d5af3674.base44.app/functions';
+var API_SAVE = API_BASE + '/fortrexSaveWaitlistEntry';
+var API_COUNT = API_BASE + '/fortrexGetWaitlistCount';
+var API_MEMBER = API_BASE + '/fortrexGetMemberStatus';
 var SITE_URL = 'https://somilsharma2000.github.io/fortrex-website/';
 var pageLoadedAt = Date.now();
 var refFromUrl = '';

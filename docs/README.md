@@ -34,6 +34,8 @@ Data entity: `FortrexWaitlist` — fields: email, name, phone, country, referral
 
 **Never point pages at the old arlo endpoints — that app is dead (org integration limit).**
 
+**Migration to the platform (one line):** all three endpoint URLs derive from the `API_BASE` constant at the top of `index.html`. When `fortrex-platform` is live, change that one line to the platform's API base (its `/api/waitlist` accepts the same field names, `referredByCode` included) and the funnel is migrated. The platform enforces the 10,000-seat cap and rejects signups with `gates_closed` when full.
+
 ## 4. Design system (the canon — exact values)
 
 - Background: obsidian `#050506` + layered radial-gradient shell (`.fortrex-shell`, ends `#05050a`) + gold grid overlay (`.grid-noise`)
