@@ -123,13 +123,13 @@ footer{border-top:1px solid rgba(242,209,138,.09);padding:36px 22px;margin-top:5
   </div>
 
   <div class="genesis-panel glass">
-    <h3 class="display">Genesis standings — live.</h3>
-    <p>While the trading board stays sealed, the founding circle is forming in real time:</p>
+    <h3 class="display">Founding list — live.</h3>
+    <p>While the trading board stays sealed, the founding cohort is forming in real time:</p>
     <div class="stat-row">
-      <div class="stat glass"><div class="stat-num" id="statMembers">—</div><div class="stat-lab">GENESIS MEMBERS</div></div>
-      <div class="stat glass"><div class="stat-num" id="statSeats">—</div><div class="stat-lab">SEATS REMAINING</div></div>
+      <div class="stat glass"><div class="stat-num" id="statMembers">—</div><div class="stat-lab">FOUNDING MEMBERS</div></div>
+      <div class="stat glass"><div class="stat-num" id="statSeats">—</div><div class="stat-lab">DAYS TO LAUNCH</div></div>
     </div>
-    <a class="primary-cta" style="width:100%;" href="index.html">CLAIM YOUR SEAT BEFORE THE SEAL BREAKS &nbsp;&#8594;</a>
+    <a class="primary-cta" style="width:100%;" href="index.html">RESERVE A FOUNDING SEAT &nbsp;&#8594;</a>
   </div>
 
   <div class="pledge">
@@ -167,7 +167,7 @@ function loadStats(){
   fetch(API_COUNT).then(function(r){return r.json()}).then(function(data){
     if(!data.success) return;
     document.getElementById('statMembers').textContent = (data.count||0).toLocaleString();
-    document.getElementById('statSeats').textContent = (data.remaining||10000).toLocaleString();
+    document.getElementById('statSeats').textContent = 'T-' + Math.max(0, Math.ceil((new Date('2026-11-07T09:00:00+05:30').getTime() - Date.now()) / 86400000));
   }).catch(function(){});
 }
 tick(); setInterval(tick,1000); loadStats(); setInterval(loadStats,60000);
